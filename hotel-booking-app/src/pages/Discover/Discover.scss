@@ -1,0 +1,191 @@
+.layout-home {
+    position: relative;
+
+    header {
+        background-color: #fff;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        background-color: #003B95;
+        padding: 20px 150px;
+        height: 175px;
+
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+
+            a {
+                color: rgb(255, 255, 255);
+            }
+        }
+
+        .option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -100px;
+
+            .language {
+                margin-right: 20px;
+
+
+                img {
+                    width: 30px;
+                    height: 30px;
+                    object-fit: cover;
+                    overflow: hidden;
+                    border-radius: 50%;
+                }
+            }
+
+            .login {
+                color: #003B95;
+                font-weight: 500;
+            }
+
+            .logout {
+                color: #003B95;
+                font-weight: 500;
+            }
+        }   
+    }
+
+    .menu {
+        position: relative;
+        top: -100px;
+        padding:0 150px;
+    }
+
+    .search {
+        background-color: #ffffff00;
+        position: relative;
+        top: -45px;
+    }
+
+    &__content {
+        padding: calc(10px + 10vw);
+        padding-top: 0px;
+        padding-bottom: 50px;
+        background-color: #fff;
+
+        .filter {
+            h2 {
+                margin: 0;
+            }
+        }
+
+        .list-hotel {
+
+            .card-item {
+                background-color: #F0F6FF;
+                border: 1px solid #A3D7FC;
+                box-shadow: 0 1px 1px 0 #A3D7FC,
+                    0 1px 1px -1px #A3D7FC,
+                    0 2px 8px 2px #A3D7FC;
+
+                .ant-card-head {
+                    border-bottom: 1px solid #A3D7FC;
+                    display: none;
+                }
+
+                .image {
+                    width: 100%;
+                    height: auto;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        aspect-ratio: 4/3;
+                        object-fit: cover;
+                    }
+                }
+
+                .content {
+
+                    .title {
+                        font-size: 20px;
+                        color: #006ce4;
+                        transition: all 0.3s;
+                        margin: 0;
+                        margin-bottom: 10px;
+
+                        &:hover {
+                            color: black;
+                            transition: all 0.3s;
+                        }
+                    }
+
+                    .address {
+                        margin-bottom: 10px;
+                        font-weight: 500;
+                    }
+
+                    .description {
+                        white-space: nowrap;
+                            overflow: hidden;  
+                            text-overflow: ellipsis;
+                    }
+
+                    .cancel {
+                        color: green;
+                        font-weight: 600;
+                    }
+
+                    .deposit {
+                        color: green;
+                        font-weight: 600;
+                        margin-bottom: 10px;
+                    }
+
+                }
+
+                .card-price {
+                    position: relative;
+
+                    .card-price__item {
+                        position: absolute;
+                        right: 0;
+                        bottom: 0;
+                        text-align: right;
+
+                        .desc {
+                            font-size: 13px;
+                            color: #ababab;
+                        }
+
+                        .price {
+                            font-size: 20px;
+                            font-weight: 500;
+                            font-style: italic;
+                            color: red;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &__footer {
+        text-align: center;
+        background-color: #003B95;
+        color: #fff;
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .layout-home {
+        &__header {
+            padding: 30px 50px;
+        }
+    }
+
+    .layout-home__content {
+        padding: 30px 50px;
+    }
+
+}

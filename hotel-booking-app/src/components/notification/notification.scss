@@ -1,0 +1,104 @@
+.notify {
+    width: 350px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+        0 3px 6px -4px rgba(0, 0, 0, 0.12),
+        0 9px 28px 8px rgba(0, 0, 0, 0.0);
+    border-radius: 8px;
+    background-clip: padding-box;
+
+    ::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #fff;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #EAEAEA;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+
+    &__header {
+        padding: 20px 35px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #ebebeb;
+
+        &--right {
+            &-title {
+                margin-left: 10px;
+                font-weight: 600;
+            }
+        }
+
+        &--left {
+            a {
+                font-size: 12px;
+            }
+        }
+    }
+
+    &__body {
+        height: 300px;
+        overflow-y: auto;
+
+        .ant-dropdown-menu {
+            box-shadow: none;
+            padding: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ebebeb;
+        }
+
+        .ant-dropdown-menu-title-content {
+            padding: 15px 10px;
+        }
+
+        .notify__item{
+            display: flex;
+
+            .icon {
+                width: 40px;
+                height: 40px;
+                background-color: #c7f3ff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                margin-right: 20px;
+
+                span {
+                    color: #036681;
+                    font-weight: 600;
+                }
+            }
+
+            .content {
+                .title {
+                    font-weight: 600;
+                    text-transform: capitalize;
+                }
+
+                .time {
+                    font-size: 12px;
+                    color: #848484;
+                }
+            }
+        }
+    }
+}
+
+.button-notify{
+    border: 0;
+    font-size: 22px;
+}

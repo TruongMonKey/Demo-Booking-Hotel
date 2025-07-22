@@ -1,0 +1,695 @@
+{
+  "user": [
+    {
+      "fullname": "admin",
+      "email": "abc@gmail.com",
+      "phone": "0123456789",
+      "password": "1234",
+      "admin": true,
+      "token": "dfhjkjgdsdgjkhfdsdfhjkl"
+    }
+  ],
+  "hotels": [
+    {
+      "id": "111abc",
+      "name": "Ocean Breeze Hotel",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/274006930.webp?k=e397dcbf47375bf37d574457f75b5a24e19121e1edd24b88ea367284811b855b&o=",
+      "address": "88 Đường Biển, Đà Nẵng, Việt Nam",
+      "linkMap": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30672.591848580912!2d108.18774189520273!3d16.061650291516617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142198f25e0472b%3A0x19c071546f8c82cc!2sSeahorse%20Signature%20By%20Haviland!5e0!3m2!1svi!2s!4v1743769098886!5m2!1svi!2s",
+      "description": "Khách sạn Sunrise Ocean tọa lạc ngay trung tâm thành phố, chỉ cách bãi biển vài bước chân, mang đến không gian kiến trúc hiện đại, sang trọng cùng tầm nhìn hướng biển tuyệt đẹp. Với nhiều hạng phòng từ Standard, Deluxe đến Suite, mỗi phòng được thiết kế tinh tế, thoáng đãng và trang bị đầy đủ tiện nghi như điều hòa, TV màn hình phẳng, minibar, két an toàn cá nhân và Wi‑Fi tốc độ cao, bạn sẽ có trải nghiệm nghỉ dưỡng thoải mái và đẳng cấp. Khách sạn còn sở hữu hồ bơi ngoài trời, phòng gym & spa, nhà hàng phục vụ ẩm thực địa phương và quốc tế, quầy bar trên tầng thượng cùng dịch vụ phòng 24/7 và đưa đón sân bay (có phụ phí). Đội ngũ nhân viên thân thiện, chuyên nghiệp luôn sẵn sàng hỗ trợ check‑in/check‑out nhanh chóng, tư vấn và đặt tour tham quan cho khách. Đặc biệt, bạn sẽ được hưởng ưu đãi giảm 10% khi đặt phòng trước 30 ngày và miễn phí bữa sáng buffet cho trẻ em dưới 6 tuổi, cùng nhiều combo nghỉ dưỡng + spa tiết kiệm.",
+      "rate": 5,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "service": [
+        "Xe đưa đón sân bay",
+        "Phòng gia đình",
+        "Phòng không hút thuốc",
+        "Chỗ đỗ xe miễn phí",
+        "Lễ tân 24 giờ",
+        "Sân thượng / hiên",
+        "Dịch vụ phòng",
+        "Thang máy",
+        "Giặt ủi"
+      ],
+      "images": [
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/274006930.jpg?k=97d6d1a6e1739f452dd3ebb9fd68dd077571439d9d822bbc9dbe5d53d0f68d57&o=",
+        "https://cf.bstatic.com/xdata/images/hotel/max500/280287147.jpg?k=d3c3d3beb152eb0f71465a43652bbf6e2a0a55561a5d0a32c35bcdd379b85756&o=",
+        "https://cf.bstatic.com/xdata/images/hotel/max500/250392278.jpg?k=9defa4aa39814abe8b408d74714703ce6aa0db2c915e09828e5dcd966823d069&o=",
+        "https://cf.bstatic.com/xdata/images/hotel/max300/280287028.jpg?k=56b11dbe0551a2b2d53d705f21de6d32fb88fc7e2f2fcc0eabfde649cf2baf53&o=",
+        "https://cf.bstatic.com/xdata/images/hotel/max300/250391607.jpg?k=21d09c66765c8c6ff1da2df5cee5f3b58f3d7f632ffdc308aed5489ea0a375c1&o=",
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/250392167.jpg?k=edf09741aa5eb2b20bb0a3837920768af26716a7f93ff8b812f533dbb4027295&o=&hp=1",
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282735584.jpg?k=021104f9ba17d0592e6e2dc8c00eaf65e5e5ba08015aee42d9023d35dec81b27&o=&hp=1",
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282730823.jpg?k=a434642fc7b9a38c0e14ffd6aa25c1cb2ac623135f2b4270b8761321cd8a1e1b&o=&hp=1"
+      ],
+      "roomTypes": [
+        {
+          "id": "111abc-room1",
+          "name": "Phòng Ocean View",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 45,
+          "price": 1250000,
+          "availableRooms": 5,
+          "amenities": [
+            {
+              "id": "amenity-1747218568156-Ban công",
+              "name": "Ban công",
+              "roomTypeId": "111abc-room1"
+            },
+            {
+              "id": "amenity-1747218568157-View biển",
+              "name": "View biển",
+              "roomTypeId": "111abc-room1"
+            },
+            {
+              "id": "amenity-1747218568157-TV thông minh",
+              "name": "TV thông minh",
+              "roomTypeId": "111abc-room1"
+            },
+            {
+              "id": "amenity-1747218568157-Máy pha cà phê",
+              "name": "Máy pha cà phê",
+              "roomTypeId": "111abc-room1"
+            },
+            {
+              "id": "amenity-1747218568157-Bồn tắm",
+              "name": "Bồn tắm",
+              "roomTypeId": "111abc-room1"
+            }
+          ],
+          "hotelId": "111abc"
+        },
+        {
+          "id": "111abc-room2",
+          "name": "Phòng ABc View",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 45,
+          "price": 1450000,
+          "availableRooms": 5,
+          "amenities": [
+            {
+              "id": "111abc-room2-amenity1",
+              "name": "Ban công",
+              "roomTypeId": "111abc-room2"
+            },
+            {
+              "id": "111abc-room2-amenity2",
+              "name": "View biển",
+              "roomTypeId": "111abc-room2"
+            },
+            {
+              "id": "111abc-room2-amenity3",
+              "name": "TV thông minh",
+              "roomTypeId": "111abc-room2"
+            },
+            {
+              "id": "111abc-room2-amenity4",
+              "name": "Máy pha cà phê",
+              "roomTypeId": "111abc-room2"
+            }
+          ]
+        },
+        {
+          "id": "111abc-1747216679416",
+          "name": "Phòng chủ tịch",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 150,
+          "price": 25000000,
+          "availableRooms": 1,
+          "amenities": [
+            {
+              "id": "amenity-1747216679416-amenity8",
+              "name": "Tủ lạnh mini",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity7",
+              "name": "Máy lạnh",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity6",
+              "name": "Wi-Fi tốc độ cao",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity5",
+              "name": "Bồn tắm",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity4",
+              "name": "Máy pha cà phê",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity3",
+              "name": "TV thông minh",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity2",
+              "name": "View biển",
+              "roomTypeId": "111abc-1747216679416"
+            },
+            {
+              "id": "amenity-1747216679416-amenity1",
+              "name": "Ban công",
+              "roomTypeId": "111abc-1747216679416"
+            }
+          ],
+          "hotelId": "111abc"
+        }
+      ]
+    },
+    {
+      "id": "222def",
+      "name": "Golden Lotus Hotel",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/659772477.webp?k=c83c67815c741f1fbae0954de8d1f2f3e8e5677fd5d4039bd8cd994db1a187c2&o=",
+      "address": "99 Lý Thường Kiệt, Hà Nội, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example14",
+      "description": "Khách sạn sang trọng nằm giữa trung tâm thủ đô.",
+      "rate": 4.5,
+      "checkInTime": "15:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "222def-room1",
+          "name": "Phòng Premium",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 40,
+          "price": 1550000,
+          "availableRooms": 3,
+          "amenities": [
+            {
+              "id": "222def-room1-amenity1",
+              "name": "Bàn làm việc",
+              "roomTypeId": "222def-room1"
+            },
+            {
+              "id": "222def-room1-amenity2",
+              "name": "TV 4K",
+              "roomTypeId": "222def-room1"
+            },
+            {
+              "id": "222def-room1-amenity3",
+              "name": "Mini Bar",
+              "roomTypeId": "222def-room1"
+            },
+            {
+              "id": "222def-room1-amenity4",
+              "name": "View phố",
+              "roomTypeId": "222def-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "333ghi",
+      "name": "Pine Hill Resort",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/660976477.webp?k=99c810a4fbc6c1414df3172ce5722060cc8bc622bd6ad2381958d36960cfb659&o=",
+      "address": "12 Đồi Thông, Sa Pa, Lào Cai, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example15",
+      "description": "Khu nghỉ dưỡng yên bình giữa rừng thông và núi đồi.",
+      "rate": 4.7,
+      "checkInTime": "14:00",
+      "checkOutTime": "11:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "333ghi-room1",
+          "name": "Phòng Mountain",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 50,
+          "price": 1650000,
+          "availableRooms": 7,
+          "amenities": [
+            {
+              "id": "333ghi-room1-amenity1",
+              "name": "Lò sưởi",
+              "roomTypeId": "333ghi-room1"
+            },
+            {
+              "id": "333ghi-room1-amenity2",
+              "name": "Ban công",
+              "roomTypeId": "333ghi-room1"
+            },
+            {
+              "id": "333ghi-room1-amenity3",
+              "name": "View núi",
+              "roomTypeId": "333ghi-room1"
+            },
+            {
+              "id": "333ghi-room1-amenity4",
+              "name": "Máy sưởi",
+              "roomTypeId": "333ghi-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "444jkl",
+      "name": "Coral Reef Hotel",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/579096651.webp?k=5655b53b851013f3933ea1dfda9f373ff46dfa2e97ab8cd699b659594b3a37cb&o=",
+      "address": "55 Bãi San Hô, Nha Trang, Khánh Hòa, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example16",
+      "description": "Khách sạn gần bãi biển, phù hợp cho các hoạt động dưới nước.",
+      "rate": 4.4,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "444jkl-room1",
+          "name": "Phòng Seafront",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 42,
+          "price": 1500000,
+          "availableRooms": 4,
+          "amenities": [
+            {
+              "id": "444jkl-room1-amenity1",
+              "name": "Ban công",
+              "roomTypeId": "444jkl-room1"
+            },
+            {
+              "id": "444jkl-room1-amenity2",
+              "name": "View biển",
+              "roomTypeId": "444jkl-room1"
+            },
+            {
+              "id": "444jkl-room1-amenity3",
+              "name": "TV 4K",
+              "roomTypeId": "444jkl-room1"
+            },
+            {
+              "id": "444jkl-room1-amenity4",
+              "name": "Mini Bar",
+              "roomTypeId": "444jkl-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "555mno",
+      "name": "Sunset Villa",
+      "thumbnail": "https://images.squarespace-cdn.com/content/v1/5aadf482aa49a1d810879b88/1626698584182-YPDVH4ZANFBZSEPY7AEM/2.jpg",
+      "address": "77 Hoàng Hôn, Mũi Né, Bình Thuận, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example17",
+      "description": "Biệt thự yên tĩnh với khung cảnh hoàng hôn tuyệt đẹp.",
+      "rate": 4.8,
+      "checkInTime": "15:00",
+      "checkOutTime": "11:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "555mno-room1",
+          "name": "Villa Sunset",
+          "quantityBed": 2,
+          "quantityPeople": 4,
+          "roomArea": 90,
+          "price": 2400000,
+          "availableRooms": 2,
+          "amenities": [
+            {
+              "id": "555mno-room1-amenity1",
+              "name": "Bể bơi riêng",
+              "roomTypeId": "555mno-room1"
+            },
+            {
+              "id": "555mno-room1-amenity2",
+              "name": "View biển",
+              "roomTypeId": "555mno-room1"
+            },
+            {
+              "id": "555mno-room1-amenity3",
+              "name": "Bếp nhỏ",
+              "roomTypeId": "555mno-room1"
+            },
+            {
+              "id": "555mno-room1-amenity4",
+              "name": "Phòng khách",
+              "roomTypeId": "555mno-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "666pqr",
+      "name": "Metro Stay Hotel",
+      "thumbnail": "https://chupanhnoithat.vn/upload/images/ch%E1%BB%A5p%20h%C3%ACnh%20qu%E1%BA%A3ng%20c%C3%A1o%20kh%C3%A1ch%20s%E1%BA%A1n.JPG",
+      "address": "66 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example18",
+      "description": "Khách sạn tiện nghi nằm ở khu phố đi bộ sôi động.",
+      "rate": 4.3,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "666pqr-room1",
+          "name": "Phòng City",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 32,
+          "price": 1100000,
+          "availableRooms": 6,
+          "amenities": [
+            {
+              "id": "666pqr-room1-amenity1",
+              "name": "TV 4K",
+              "roomTypeId": "666pqr-room1"
+            },
+            {
+              "id": "666pqr-room1-amenity2",
+              "name": "Mini Bar",
+              "roomTypeId": "666pqr-room1"
+            },
+            {
+              "id": "666pqr-room1-amenity3",
+              "name": "Điều hòa",
+              "roomTypeId": "666pqr-room1"
+            },
+            {
+              "id": "666pqr-room1-amenity4",
+              "name": "View phố",
+              "roomTypeId": "666pqr-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "777stu",
+      "name": "Ancient Town Inn",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/661119765.webp?k=031a471f261344378c3f101d5168de44bc728004f39218d23ee1b9d9d9089e4e&o=",
+      "address": "22 Phố Cổ, Hội An, Quảng Nam, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example19",
+      "description": "Nhà nghỉ mang phong cách cổ kính, gần khu phố cổ.",
+      "rate": 3,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "777stu-room1",
+          "name": "Phòng Ancient",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 38,
+          "price": 1300000,
+          "availableRooms": 8,
+          "amenities": [
+            {
+              "id": "777stu-room1-amenity1",
+              "name": "Nội thất gỗ",
+              "roomTypeId": "777stu-room1"
+            },
+            {
+              "id": "777stu-room1-amenity2",
+              "name": "Ban công",
+              "roomTypeId": "777stu-room1"
+            },
+            {
+              "id": "777stu-room1-amenity3",
+              "name": "View phố cổ",
+              "roomTypeId": "777stu-room1"
+            },
+            {
+              "id": "777stu-room1-amenity4",
+              "name": "TV",
+              "roomTypeId": "777stu-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "888vwx",
+      "name": "Sky High Resort",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/550762730.webp?k=7670f9a0ebcc8a6531f354f79f1587f59a2b77b64bfd25c101b69058957a427d&o=",
+      "address": "33 Đỉnh Núi, Đà Lạt, Lâm Đồng, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example20",
+      "description": "Khu nghỉ dưỡng trên cao với tầm nhìn toàn cảnh thành phố.",
+      "rate": 4.9,
+      "checkInTime": "15:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "888vwx-room1",
+          "name": "Phòng Panorama",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 55,
+          "price": 1850000,
+          "availableRooms": 3,
+          "amenities": [
+            {
+              "id": "888vwx-room1-amenity1",
+              "name": "View toàn cảnh",
+              "roomTypeId": "888vwx-room1"
+            },
+            {
+              "id": "888vwx-room1-amenity2",
+              "name": "TV 4K",
+              "roomTypeId": "888vwx-room1"
+            },
+            {
+              "id": "888vwx-room1-amenity3",
+              "name": "Mini Bar",
+              "roomTypeId": "888vwx-room1"
+            },
+            {
+              "id": "888vwx-room1-amenity4",
+              "name": "Ban công",
+              "roomTypeId": "888vwx-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "999yzab",
+      "name": "Jungle Retreat",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/644075979.webp?k=a99727094f88e630d79f602e04f9dd28a49b643d5fe20e05ccc997bdb0151d68&o=",
+      "address": "44 Rừng Sâu, Cát Tiên, Lâm Đồng, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example21",
+      "description": "Khu nghỉ dưỡng giữa rừng, gần gũi thiên nhiên hoang dã.",
+      "rate": 4.6,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "999yzab-room1",
+          "name": "Phòng Jungle",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 48,
+          "price": 1750000,
+          "availableRooms": 5,
+          "amenities": [
+            {
+              "id": "999yzab-room1-amenity1",
+              "name": "Ban công",
+              "roomTypeId": "999yzab-room1"
+            },
+            {
+              "id": "999yzab-room1-amenity2",
+              "name": "View rừng",
+              "roomTypeId": "999yzab-room1"
+            },
+            {
+              "id": "999yzab-room1-amenity3",
+              "name": "Nội thất tre",
+              "roomTypeId": "999yzab-room1"
+            },
+            {
+              "id": "999yzab-room1-amenity4",
+              "name": "Điều hòa",
+              "roomTypeId": "999yzab-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "000def",
+      "name": "Imperial Hotel",
+      "thumbnail": "https://cf.bstatic.com/xdata/images/hotel/square600/495717055.webp?k=90746a7cae04ca35c6cb19f6adfad60267929a6d260023b5993ff00c797ecb74&o=",
+      "address": "11 Kinh Thành, Huế, Thừa Thiên Huế, Việt Nam",
+      "linkMap": "https://maps.app.goo.gl/example22",
+      "description": "Khách sạn mang phong cách đế vương, gần kinh thành Huế.",
+      "rate": 4.8,
+      "checkInTime": "14:00",
+      "checkOutTime": "12:00",
+      "images": [],
+      "roomTypes": [
+        {
+          "id": "000def-room1",
+          "name": "Phòng Imperial",
+          "quantityBed": 1,
+          "quantityPeople": 2,
+          "roomArea": 58,
+          "price": 1950000,
+          "availableRooms": 4,
+          "amenities": [
+            {
+              "id": "000def-room1-amenity1",
+              "name": "Nội thất cổ",
+              "roomTypeId": "000def-room1"
+            },
+            {
+              "id": "000def-room1-amenity2",
+              "name": "Ban công",
+              "roomTypeId": "000def-room1"
+            },
+            {
+              "id": "000def-room1-amenity3",
+              "name": "View sông",
+              "roomTypeId": "000def-room1"
+            },
+            {
+              "id": "000def-room1-amenity4",
+              "name": "TV 4K",
+              "roomTypeId": "000def-room1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hotel-1747572898194",
+      "name": "Ocen Hotel",
+      "thumbnail": "",
+      "address": "Phạm Văn Đồng Hà nội",
+      "linkMap": "https://www.google.com/maps/@21.0288656,105.7468539,3857m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDUxMy4xIKXMDSoASAFQAw%3D%3D",
+      "description": "Phòng rộng thoáng mát",
+      "rate": 5,
+      "checkInTime": "",
+      "checkOutTime": "",
+      "service": [],
+      "images": [],
+      "roomTypes": []
+    },
+    {
+      "id": "hotel-1747575613170",
+      "name": "Ocen",
+      "thumbnail": "",
+      "address": "Cầu Diễn, Hà Nội",
+      "linkMap": "https://www.google.com/maps/@21.0288656,105.7468539,3857m/data=!3m1!1e3?entry=ttu&g_ep=EgoyMDI1MDUxMy4xIKXMDSoASAFQAw%3D%3D",
+      "description": "Khách sạn sang trọng",
+      "rate": 5,
+      "checkInTime": "",
+      "checkOutTime": "",
+      "service": [],
+      "images": [],
+      "roomTypes": []
+    }
+  ],
+  "bookings": [
+    {
+      "id": "f550",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-room1",
+      "date": [
+        "01/05/2025",
+        "03/05/2025"
+      ],
+      "fullName": "Dũng đẹp trai",
+      "email": "ongdungdz@gmail.com",
+      "phone": "0343389956",
+      "status": "Confirmed"
+    },
+    {
+      "id": "a5e9",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-room1",
+      "date": [
+        "01/05/2025",
+        "10/05/2025"
+      ],
+      "fullName": "Dũng đẹp trai",
+      "email": "duxng9324@gmail.com",
+      "phone": "0343389956",
+      "status": "Pending"
+    },
+    {
+      "id": "7db5",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-room1",
+      "date": [
+        "01/05/2025",
+        "03/05/2025"
+      ],
+      "fullName": "Dũng đẹp trai",
+      "email": "duxng9324@gmail.com",
+      "phone": "0343389956"
+    }
+  ],
+  "stats": {
+    "totalBookings": 2,
+    "revenue": 14950000,
+    "newCustomers": 1
+  },
+  "rooms": [
+    {
+      "id": 101,
+      "type": "Phòng Ocean View",
+      "status": "Available",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-room1"
+    },
+    {
+      "id": 102,
+      "type": "Phòng ABc View",
+      "status": "Available",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-room2"
+    },
+    {
+      "id": 103,
+      "type": "Phòng chủ tịch",
+      "status": "Available",
+      "hotelId": "111abc",
+      "roomTypeId": "111abc-1747216679416"
+    }
+  ],
+  "feedback": {
+    "newFeedbackCount": 5,
+    "feedbacks": [
+      {
+        "id": 1,
+        "customer": "Alice Brown",
+        "comment": "Dịch vụ rất tốt!",
+        "date": "2025-05-13"
+      }
+    ]
+  },
+  "notifications": {
+    "newNotificationCount": 3,
+    "notifications": [
+      {
+        "id": 1,
+        "message": "Phòng 101 đã được đặt.",
+        "date": "2025-05-14T15:00:00+07:00",
+        "read": false
+      }
+    ]
+  },
+  "additionalStats": {
+    "cancellationRate": 10,
+    "occupancyRate": 75
+  }
+}

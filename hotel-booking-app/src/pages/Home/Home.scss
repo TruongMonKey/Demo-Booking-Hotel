@@ -1,0 +1,154 @@
+.layout-welcome {
+
+  &__header {
+    background-color: #fff;
+
+  }
+
+  .video-background {
+    position: relative;
+    width: 100%;
+    height: 90vh;
+    overflow: hidden;
+
+    video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: 135%;
+      object-fit: cover;
+
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      padding: calc(10px + 10vw);
+      padding-top: 0;
+      padding-bottom: 0;
+      display: block;
+
+      .login-language {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        a {
+          color: #fff;
+          font-weight: 500;
+        }
+
+        .profile {
+          display: inline;
+        }
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+
+        a {
+          color: rgb(255, 255, 255);
+        }
+      }
+
+      .title {
+        font-size: 48px;
+        font-weight: 500;
+        margin-top: 80px;
+        margin-bottom: 30px;
+      }
+
+      .desciption {
+        font-size: 24px;
+        margin-bottom: 30px;
+      }
+
+      .button-discover {
+        border-radius: 0;
+        background-color: transparent;
+        border: 2px solid #fff;
+        height: 45px;
+        padding: 0 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+        overflow: hidden; // Đảm bảo không bị lệch khi hover
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
+        a {
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          gap: 10px; // Duy trì khoảng cách giữa text và icon
+
+          span {
+            font-size: 18px;
+          }
+
+          svg {
+            font-size: 18px;
+            margin-top: 2px;
+            font-weight: 400;
+            transition: transform 0.3s ease;
+          }
+        }
+
+        // Khi hover, chỉ di chuyển icon mà không làm thay đổi kích thước nút
+        &:hover a svg {
+          transform: translateX(5px);
+        }
+      }
+    }
+  }
+
+  .search {
+    position: relative;
+    margin-top: 35px;
+    background-color: #fff;
+    
+    .hotel-search-bar{
+      border:  0;
+      box-shadow: none;
+
+      .search-item{
+        border-radius: 0;
+      }
+    }
+  }
+
+  &__conten {
+    background-color: #fff;
+    padding: 20px 100px;
+
+    .title {
+      margin: 10px;
+      margin-bottom: 40px;
+    }
+  }
+
+}

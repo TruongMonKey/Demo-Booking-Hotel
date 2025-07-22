@@ -1,0 +1,52 @@
+.header-payment {
+    padding: calc(10px + 10vw);
+    padding-top: 0px;
+    padding-bottom: 0;
+    margin-top: 30px;
+}
+
+.main-payment {
+    .row-container {
+        margin-top: 30px;
+        padding: calc(10px + 10vw);
+        padding-top: 0px;
+        padding-bottom: 0;
+        margin-bottom: 30px;
+    
+        .title {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+    
+            h1 {
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+        .info {
+            width: 100%;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        .user {
+            width: 100%;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+    
+        .submit {
+            text-align: center;
+            width: 100%;
+        }
+    }
+    
+}
+
+.footer-payment {
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+}

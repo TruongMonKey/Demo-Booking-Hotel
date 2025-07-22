@@ -1,0 +1,122 @@
+.title {
+    margin-top: 0;
+}
+
+.address {
+    margin-bottom: 20px;
+}
+
+.slide {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.map {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.description {
+    line-height: 25px;
+    letter-spacing: 1px;
+}
+
+.box-evaluate {
+    text-align: right;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+
+    &__1 {
+        padding: 15px 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    &__2 {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        padding: 15px 10px;
+        border-bottom: 1px solid #ddd;
+
+        .rateStar {
+            background-color: #003B95;
+            color: #fff;
+            width: 50px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 20px;
+            font-weight: 500;
+            border-radius: 10px 10px 10px 0px;
+        }
+
+        .type {
+            color: #003B95;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .quantity-review {
+            color: #979797;
+        }
+    }
+}
+
+.service {
+    margin-bottom: 20px;
+
+    &__item {
+        margin: 5px;
+        font-size: 14px;
+        padding: 5px;
+    }
+}
+
+.box-outstanding {
+    background-color: #F0F6FF;
+    padding: 10px 30px 30px 30px;
+    border-radius: 10px;
+
+
+    .wrap {
+        display: flex;
+        align-items: center;
+
+        .icon-park {
+            display: inline;
+            font-size: 22px;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .desc {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            line-height: 25px;
+        }
+    }
+
+    .desc {
+        margin-left: 40px;
+        line-height: 25px;
+    }
+}
+
+
+.date-picker {
+    width: 70%;
+
+    .ant-picker-outlined {
+        border-color: #003B95;
+        border: 2px;
+    }
+
+    .ant-picker {
+        color: #000;
+    }
+
+}

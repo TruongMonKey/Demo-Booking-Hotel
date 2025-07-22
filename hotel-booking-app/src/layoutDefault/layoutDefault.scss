@@ -1,0 +1,87 @@
+.layout-default {
+    position: relative;
+
+    &__header {
+        min-height: 70px;
+        width: 100%;
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+        margin: 0;
+        position: fixed;
+        z-index: 1000;
+
+        .header {
+            display: flex;
+
+            &__logo {
+                width: 250px;
+                border-right: 1px solid #ddd;
+                text-align: center;
+                transition: all 0.2s;
+
+                &--fold {
+                    width: 80px;
+                    transition: all 0.2s;
+                }
+            }
+
+            &__body {
+                display: flex;
+                justify-content: space-between;
+                flex: 1;
+
+                &-left {
+                    display: flex;
+                    align-items: center;
+                    font-size: 22px;
+
+                    .menu {
+                        margin: 20px;
+                        cursor: pointer;
+                    }
+
+                    .search {
+                        margin: 20px;
+                    }
+                }
+
+                &-right {
+                    display: flex;
+                    align-items: center;
+                    margin-right: 20px;
+                    
+                }
+            }
+        }
+    }
+
+    &__sider{
+        border-right: 1px solid #ddd;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-top: 70px;
+        position: fixed;
+        height: 100vh;
+
+        .ant-menu-item {
+            margin: 0;
+        }
+    }
+
+    &__content {
+        padding: 30px;
+        max-height: 100%;
+        overflow-y: auto;
+        background-color: #fff;
+        margin-top: 70px;
+        margin-left: 250px;
+        transition: all 0.2s;
+
+        &--collapsed{
+            margin-left: 80px;
+            transition: all 0.2s;
+        }
+    }
+
+
+}

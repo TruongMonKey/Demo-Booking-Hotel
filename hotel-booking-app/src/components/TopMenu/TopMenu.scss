@@ -1,0 +1,28 @@
+.top-menu {
+    background-color: #003c9500;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+
+    .ant-menu-item {
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      margin-right: 10px;
+
+      &:hover {
+        background: #bdbdbd00;
+        border-radius: 20px;
+      }
+      &.ant-menu-item-selected {
+        border: 1px solid white;
+        border-radius: 30px;
+        background: transparent;
+
+        &:hover{
+            background-color: #003c9500;
+        }
+      }
+    }
+  }
+  

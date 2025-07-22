@@ -1,0 +1,172 @@
+// Variables
+$white: #ffffff;
+$gray-100: #f3f4f6;
+$gray-500: #6b7280;
+$gray-800: #1f2937;
+$green-100: #d1fae5;
+$green-800: #065f46;
+$yellow-100: #fef3c7;
+$yellow-800: #92400e;
+$red-100: #fee2e2;
+$red-800: #991b1b;
+
+// Global styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+// Dashboard layout
+.dashboard {
+  width: 100%;
+}
+
+// Main content
+.dashboard-main {
+  padding: 24px;
+}
+
+// Stats Card
+.stats-card {
+  background-color: $white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .stats-icon {
+    font-size: 32px;
+  }
+
+  h3 {
+    color: $gray-500;
+    font-size: 14px;
+  }
+
+  p {
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
+
+// Booking Table
+.booking-table {
+  background-color: $white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      tr {
+        th {
+          text-align: left;
+          padding: 8px;
+          color: $gray-500;
+          font-weight: 500;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-top: 1px solid $gray-100;
+        td {
+          padding: 8px;
+        }
+      }
+    }
+  }
+
+  .status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .status-confirmed {
+    background-color: $green-100;
+    color: $green-800;
+  }
+
+  .status-pending {
+    background-color: $yellow-100;
+    color: $yellow-800;
+  }
+
+  .status-cancelled {
+    background-color: $red-100;
+    color: $red-800;
+  }
+}
+
+// Available Rooms
+.available-rooms {
+  background-color: $white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  ul {
+    list-style: none;
+
+    li {
+      padding: 4px 0;
+      .status-available {
+        color: $green-800;
+      }
+    }
+  }
+}
+
+// Feedback Summary, Notifications, Additional Stats
+.feedback-summary,
+.notifications,
+.additional-stats {
+  background-color: $white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: $gray-500;
+  }
+}
+
+// Chart Containers (for MultiLine and DemoRadar)
+.box-5,
+.box-6 {
+  background-color: $white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 400px;
+}

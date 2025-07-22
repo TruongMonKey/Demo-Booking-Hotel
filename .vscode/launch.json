@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-HotelBookingServerApplication<hotel-booking-server>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.hotelbookingserver.HotelBookingServerApplication",
+            "projectName": "hotel-booking-server",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

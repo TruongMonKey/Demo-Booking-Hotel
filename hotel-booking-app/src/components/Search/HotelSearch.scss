@@ -1,0 +1,85 @@
+.hotel-search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #fdb913;
+    width: 80%;
+    margin: auto;
+    margin-top: -35px;
+    
+  
+    .search-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 0;
+      flex: 1;
+      font-size: 16px;
+
+  
+      &:not(:last-child) {
+        border-right: 1px solid #ddd;
+      }
+  
+      .icon {
+        font-size: 18px;
+        color: #666;
+      }
+  
+      .input-field,
+      .date-picker,
+      .select-field {
+        width: 100%;
+        border: none;
+        font-size: 16px;
+  
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+      }
+    }
+  
+    .search-button {
+      background: #005eff;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 6px;
+      margin-left: 8px;
+      transition: background 0.3s ease;
+  
+      &:hover {
+        background: #004bcc;
+      }
+    }
+  }
+
+  .noborder {
+    border : 2px solid #ffffff;
+    box-shadow: none;
+  } 
+  
+  @media (max-width: 768px) {
+    .hotel-search-bar {
+      flex-direction: column;
+      gap: 8px;
+    }
+  
+    .search-item {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+    }
+  
+    .search-button {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+  
