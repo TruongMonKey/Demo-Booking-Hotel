@@ -27,18 +27,14 @@ public class ImageUploadController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    @Autowired 
+    @Autowired
     private HotelRepository hotelRepository;
-
-    // Upload 1 ảnh → trả về URL
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         String url = cloudinaryService.uploadToCloudinary(file);
         return ResponseEntity.ok(url);
     }
-
-    // Upload nhiều ảnh → trả về danh sách URL
 
     @PostMapping("/upload-multiple")
     public ResponseEntity<List<String>> uploadImages(@RequestParam("files") List<MultipartFile> files) {

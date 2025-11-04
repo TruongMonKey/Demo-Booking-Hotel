@@ -182,7 +182,7 @@ export default function Home() {
       </Content>
 
       <Footer className="layout-home__footer">
-        2025 copyright @Nhom5
+        Copyright @monkeyy
       </Footer>
     </Layout>
   );
