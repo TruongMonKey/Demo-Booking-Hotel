@@ -14,6 +14,7 @@ import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.RoomType;
 import com.example.hotelbookingserver.repositories.AmenityRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
+import com.example.hotelbookingserver.services.impl.IAmenityService;
 
 @Service
 public class AmenityService implements IAmenityService {

@@ -1,13 +1,2 @@
-import './App.css';
-import AllRouter from './components/AllRouter'
-
-
-function App() {
-  return (
-    <>
-      <AllRouter/>
-    </>
-  );
-}
-
-export default App;
+// Compatibility wrapper. Real component is in App.jsx
+export { default } from './App.jsx'

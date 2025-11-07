@@ -23,6 +23,7 @@ import com.example.hotelbookingserver.repositories.AmenityRepository;
 import com.example.hotelbookingserver.repositories.HotelRepository;
 import com.example.hotelbookingserver.repositories.ImageRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
+import com.example.hotelbookingserver.services.impl.IRoomTypeService;
 import com.example.hotelbookingserver.utils.Utils;
 
 @Service

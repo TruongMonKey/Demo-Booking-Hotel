@@ -1,7 +1,6 @@
-package com.example.hotelbookingserver.services;
+package com.example.hotelbookingserver.services.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 

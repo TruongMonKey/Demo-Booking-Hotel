@@ -4,12 +4,11 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.hotelbookingserver.dtos.Response;
 import com.example.hotelbookingserver.entities.Booking;
-import com.example.hotelbookingserver.services.IBookingService;
+import com.example.hotelbookingserver.services.impl.IBookingService;
 
 @RestController
 @RequestMapping("/bookings")

@@ -7,6 +7,7 @@ $blue-500: #3b82f6;
 $green-600: #16a34a;
 $purple: #6b21a8;
 $blue: #2563eb;
+$blue-600: #2563eb; // Màu xanh đậm hơn cho hover
 
 // Global styles for ListHotel
 .grid-hotel {
@@ -115,6 +116,7 @@ $blue: #2563eb;
       margin-bottom: 4px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -141,6 +143,7 @@ $blue: #2563eb;
       margin-bottom: 8px;
       display: -webkit-box;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -204,7 +207,7 @@ $blue: #2563eb;
         border: none;
 
         &:hover {
-          background-color: darken($blue-500, 10%);
+          background-color: $blue-600;
         }
 
         a {

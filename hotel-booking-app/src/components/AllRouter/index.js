@@ -1,12 +1,2 @@
-import { useRoutes } from "react-router"
-import { router } from "../../router"
-
-function AllRouter() {
-
-    const element = useRoutes(router);
-    return (
-        <>{element}</>
-    );
-}
-
-export default AllRouter;
+// Re-export the JSX implementation to avoid JSX in .js parsing errors
+export { default } from './index.jsx'

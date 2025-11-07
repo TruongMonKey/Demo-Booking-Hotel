@@ -1,33 +1,21 @@
 package com.example.hotelbookingserver.entities;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
+import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.hotelbookingserver.entities.mapper.BaseEntity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "CHAR(36)", length = 36, updatable = false, nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-    private UUID id;
+public class User extends BaseEntity implements UserDetails {
 
     @NotBlank(message = "Email is required")
     @Column(unique = true)
@@ -42,34 +30,28 @@ public class User implements UserDetails {
     @NotBlank(message = "Password is required")
     private String password;
 
-    private String role;
+    @Column(nullable = false)
+    private boolean active = true;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    // 🔸 User - Role (Nhiều - Nhiều)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Reviews> reviews = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(
+                    new org.springframework.security.core.authority.SimpleGrantedAuthority(role.getName().name()));
+        }
+        return authorities;
     }
 
     @Override
@@ -94,7 +76,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
-
 }

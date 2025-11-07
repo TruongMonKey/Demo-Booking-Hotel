@@ -1,18 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
+// Deprecated entry file kept for compatibility. The real Vite entry is `src/main.jsx`.
+// Removed JSX to avoid Vite import-analysis JSX parsing errors in .js files.
+console.warn('src/index.js is deprecated. Use src/main.jsx as the app entry.')
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export {}

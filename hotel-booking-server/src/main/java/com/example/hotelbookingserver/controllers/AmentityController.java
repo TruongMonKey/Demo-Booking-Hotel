@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hotelbookingserver.dtos.AmenityDTO;
 import com.example.hotelbookingserver.dtos.Response;
-import com.example.hotelbookingserver.services.IAmenityService;
+import com.example.hotelbookingserver.services.impl.IAmenityService;
 
 @RestController
 @RequestMapping("/amenities")

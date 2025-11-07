@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hotelbookingserver.dtos.Response;
 import com.example.hotelbookingserver.dtos.UserDTO;
-import com.example.hotelbookingserver.services.IUserService;
+import com.example.hotelbookingserver.services.impl.IUserService;
 
 @RestController
 @RequestMapping("/users")

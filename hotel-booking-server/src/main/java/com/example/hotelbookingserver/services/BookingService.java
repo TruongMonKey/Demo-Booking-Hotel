@@ -18,6 +18,7 @@ import com.example.hotelbookingserver.exception.OurException;
 import com.example.hotelbookingserver.repositories.BookingRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.repositories.UserRepository;
+import com.example.hotelbookingserver.services.impl.IBookingService;
 import com.example.hotelbookingserver.utils.Utils;
 
 @Service

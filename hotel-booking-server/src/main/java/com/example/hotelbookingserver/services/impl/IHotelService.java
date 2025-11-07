@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.services;
+package com.example.hotelbookingserver.services.impl;
 
 import java.util.List;
 import java.util.UUID;

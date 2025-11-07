@@ -2,7 +2,6 @@ package com.example.hotelbookingserver.services;
 
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.Hotel;
-import com.example.hotelbookingserver.entities.Image;
 import com.example.hotelbookingserver.entities.Reviews;
 import com.example.hotelbookingserver.entities.RoomType;
 import com.example.hotelbookingserver.repositories.AmenityRepository;
@@ -10,9 +9,9 @@ import com.example.hotelbookingserver.repositories.HotelRepository;
 import com.example.hotelbookingserver.repositories.ImageRepository;
 import com.example.hotelbookingserver.repositories.ReviewsRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
+import com.example.hotelbookingserver.services.impl.IHotelService;
 import com.example.hotelbookingserver.utils.Utils;
 import com.example.hotelbookingserver.dtos.HotelDTO;
-import com.example.hotelbookingserver.dtos.ImageDTO;
 import com.example.hotelbookingserver.dtos.Response;
 import com.example.hotelbookingserver.dtos.ReviewsDTO;
 import com.example.hotelbookingserver.dtos.RoomTypeDTO;

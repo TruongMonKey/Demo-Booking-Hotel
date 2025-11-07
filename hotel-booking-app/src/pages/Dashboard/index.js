@@ -1,11 +1,2 @@
-import Grid from '../../components/grid';
-
-function Dashboard() {
-    return (
-        <>
-            <Grid />
-        </>
-    )
-}
-
-export default Dashboard;
+// Auto-generated wrapper: re-export JSX implementation
+export { default } from './index.jsx';

@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.services;
+package com.example.hotelbookingserver.services.impl;
 
 import java.io.IOException;
 import java.util.Map;

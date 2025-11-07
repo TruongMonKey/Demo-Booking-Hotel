@@ -17,7 +17,7 @@ public class Response {
     private String email;
     private String phone;
     private String token;
-    private String role;
+    private List<String> roles;
     private String expirationTime;
 
     private UserDTO user;

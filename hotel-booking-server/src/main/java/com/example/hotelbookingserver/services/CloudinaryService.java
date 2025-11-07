@@ -14,6 +14,7 @@ import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.Image;
 import com.example.hotelbookingserver.entities.RoomType;
 import com.example.hotelbookingserver.repositories.ImageRepository;
+import com.example.hotelbookingserver.services.impl.ICloudiraryService;
 
 import lombok.RequiredArgsConstructor;
 
