@@ -7,14 +7,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.LoginRequest;
 import com.example.hotelbookingserver.dtos.Response;
 import com.example.hotelbookingserver.dtos.UserDTO;
+import com.example.hotelbookingserver.dtos.response.ResCreateUserDTO;
 import com.example.hotelbookingserver.entities.Role;
 import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.entities.constants.ERole;
@@ -22,87 +20,18 @@ import com.example.hotelbookingserver.exception.OurException;
 import com.example.hotelbookingserver.repositories.RoleRepository;
 import com.example.hotelbookingserver.repositories.UserRepository;
 import com.example.hotelbookingserver.services.impl.IUserService;
-import com.example.hotelbookingserver.utils.JWTUtils;
 import com.example.hotelbookingserver.utils.Utils;
 
 @Service
 public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JWTUtils jwtUtils;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+
     @Autowired
     private RoleRepository roleRepository;
-
-    @Override
-    public Response register(User user) {
-        Response response = new Response();
-        try {
-            if (user.getRoles() == null || user.getRoles().isEmpty()) {
-                Role defaultRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
-                        .orElseThrow(() -> new OurException("Default role not found"));
-                user.setRoles(Set.of(defaultRole));
-            }
-            if (userRepository.existsByEmail(user.getEmail())) {
-                throw new OurException(user.getEmail() + " Already Exists");
-            }
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User savedUser = userRepository.save(user);
-            UserDTO userDTO = Utils.mapUserEntityToUserDTO(savedUser);
-            response.setStatusCode(200);
-            response.setUser(userDTO);
-        } catch (OurException e) {
-            response.setStatusCode(400);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error Occurred During User Registration " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response login(LoginRequest loginRequest) {
-
-        Response response = new Response();
-
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            var user = userRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new OurException("user Not found"));
-
-            var userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
-            var token = jwtUtils.generateToken(userDetails);
-            response.setStatusCode(200);
-            response.setToken(token);
-            response.setRoles(
-                    user.getRoles().stream()
-                            .map(role -> role.getName().name())
-                            .collect(Collectors.toList()));
-            response.setExpirationTime("7 Days");
-            response.setMessage("successful");
-            response.setFullName(user.getName());
-            response.setEmail(user.getEmail());
-            response.setPhone(user.getPhone());
-
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-
-        } catch (Exception e) {
-
-            response.setStatusCode(500);
-            response.setMessage("Error Occurred During USer Login " + e.getMessage());
-        }
-        return response;
-    }
 
     public Response getAllUsers() {
         Response response = new Response();
@@ -246,5 +175,60 @@ public class UserService implements IUserService {
             response.setMessage("Error getting all users " + e.getMessage());
         }
         return response;
+    }
+
+    @Override
+    public User handleGetUserByUsername(String username) {
+        return userRepository.findByEmail(username).orElse(null);
+    }
+
+    @Override
+    public void updateUserToken(String token, String email) {
+        User currentUser = this.handleGetUserByUsername(email);
+        if (currentUser != null) {
+            currentUser.setRefreshToken(token);
+            this.userRepository.save(currentUser);
+        }
+    }
+
+    @Override
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    @Override
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public User handleCreateUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Role defaultRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
+                    .orElseThrow(() -> new OurException("Default role not found"));
+            user.setRoles(Set.of(defaultRole));
+        } else {
+            Set<Role> roles = user.getRoles().stream()
+                    .map(role -> roleRepository.findByName(role.getName())
+                            .orElseThrow(() -> new OurException("Role not found: " + role.getName())))
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
+        }
+
+        return userRepository.save(user);
+    }
+
+    public ResCreateUserDTO convertCreateUserDTO(User user) {
+        ResCreateUserDTO res = new ResCreateUserDTO();
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+        res.setCreatedAt(user.getCreatedAt());
+        return res;
     }
 }

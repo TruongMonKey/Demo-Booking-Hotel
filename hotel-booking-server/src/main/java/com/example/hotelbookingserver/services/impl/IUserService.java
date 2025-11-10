@@ -2,15 +2,11 @@ package com.example.hotelbookingserver.services.impl;
 
 import java.util.UUID;
 
-import com.example.hotelbookingserver.dtos.LoginRequest;
 import com.example.hotelbookingserver.dtos.Response;
 import com.example.hotelbookingserver.dtos.UserDTO;
 import com.example.hotelbookingserver.entities.User;
 
 public interface IUserService {
-    Response register(User user);
-
-    Response login(LoginRequest loginRequest);
 
     Response getAllUsers();
 
@@ -23,5 +19,15 @@ public interface IUserService {
     Response getMyInfo(String email);
 
     Response updateUserById(UUID userId, UserDTO dto);
+
+    User handleGetUserByUsername(String username);
+
+    void updateUserToken(String token, String email);
+
+    User getUserByRefreshTokenAndEmail(String token, String email);
+
+    boolean isEmailExist(String email);
+
+    User handleCreateUser(User user);
 
 }

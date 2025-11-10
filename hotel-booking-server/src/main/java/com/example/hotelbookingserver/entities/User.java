@@ -4,6 +4,7 @@ import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.hotelbookingserver.entities.constants.EGender;
 import com.example.hotelbookingserver.entities.mapper.BaseEntity;
 
 import jakarta.persistence.*;
@@ -33,7 +34,16 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private boolean active = true;
 
-    // 🔸 User - Role (Nhiều - Nhiều)
+    private String address;
+
+    private int age;
+
+    @Enumerated(EnumType.STRING)
+    private EGender gender;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String refreshToken;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();

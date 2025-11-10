@@ -1,42 +1,39 @@
 package com.example.hotelbookingserver.entities.response;
 
+import java.time.Instant;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ResResponse<T> {
     private int statusCode;
+    private boolean success;
+    private String message;
     private String error;
-
-    private Object message;
     private T data;
+    private Instant timestamp;
 
-    public int getStatusCode() {
-        return statusCode;
+    public ResResponse() {
+        this.timestamp = Instant.now();
     }
 
-    public void setStatusCode(int statusCode) {
+    public ResResponse(int statusCode, boolean success, String message, String error, T data) {
         this.statusCode = statusCode;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public Object getMessage() {
-        return message;
-    }
-
-    public void setMessage(Object message) {
+        this.success = success;
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
+        this.error = error;
         this.data = data;
+        this.timestamp = Instant.now();
+    }
+
+    public static <T> ResResponse<T> success(int status, String msg, T data) {
+        return new ResResponse<>(status, true, msg, null, data);
+    }
+
+    public static <T> ResResponse<T> error(int status, String msg, String error) {
+        return new ResResponse<>(status, false, msg, error, null);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.services.impl;
+package com.example.hotelbookingserver.services;
 
 import java.io.IOException;
 import java.util.Map;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
+import com.example.hotelbookingserver.services.impl.IImageService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -4,7 +4,6 @@ import com.example.hotelbookingserver.services.HotelService;
 import com.example.hotelbookingserver.dtos.HotelDTO;
 import com.example.hotelbookingserver.dtos.Response;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;

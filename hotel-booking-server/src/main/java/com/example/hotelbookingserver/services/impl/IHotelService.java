@@ -1,6 +1,5 @@
 package com.example.hotelbookingserver.services.impl;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.example.hotelbookingserver.dtos.HotelDTO;

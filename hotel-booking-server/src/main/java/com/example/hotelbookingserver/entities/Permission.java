@@ -21,16 +21,22 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "permissions")
-@Getter     
+@Getter
 @Setter
 @NoArgsConstructor
 public class Permission extends BaseEntity {
 
-    
     public Permission(String name, String apiPath, EHttpMethod method, String module) {
         this.name = name;
         this.apiPath = apiPath;
         this.method = method;
+        this.module = module;
+    }
+
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = EHttpMethod.valueOf(method);
         this.module = module;
     }
 
@@ -51,6 +57,5 @@ public class Permission extends BaseEntity {
 
     @NotBlank(message = "Module cannot be blank")
     private String module;
-
 
 }
