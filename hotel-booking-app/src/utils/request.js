@@ -1,10 +1,11 @@
 const baseURL = "http://localhost:8081/"
 
-const token = localStorage.getItem("accessToken");
+function getToken() {
+    return localStorage.getItem("accessToken");
+}
 
 async function checkResponse(response) {
     if (!response.ok) {
-        // Đọc body json hoặc text 1 lần
         const contentType = response.headers.get("content-type");
         let errorMessage = `HTTP error! status: ${response.status}`;
         if (contentType && contentType.includes("application/json")) {
@@ -16,48 +17,49 @@ async function checkResponse(response) {
         }
         throw new Error(errorMessage);
     }
-
-    // Nếu ok thì cũng đọc json 1 lần
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
         return await response.json();
     }
-
     return null;
 }
 
+function buildHeaders(extra) {
+    const token = getToken();
+    let headers = { 'Content-Type': 'application/json', ...extra };
+    if(token) headers["Authorization"] = `Bearer ${token}`;
+    return headers;
+}
 
 export async function post(url, data) {
     const response = await fetch(baseURL + url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: buildHeaders(),
         body: JSON.stringify(data),
     });
     return checkResponse(response);
 }
 
 export async function get(url) {
-    const response = await fetch(baseURL + url
-        // , {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${token}`, // Gửi token trong header
-        //     },
-        // }
-    );
+    const response = await fetch(baseURL + url, {
+        method: 'GET',
+        headers: buildHeaders()
+    });
     return checkResponse(response);
 }
 
 export async function del(url) {
-    const response = await fetch(baseURL + url, { method: 'DELETE' });
+    const response = await fetch(baseURL + url, {
+        method: 'DELETE',
+        headers: buildHeaders()
+    });
     return checkResponse(response);
 }
 
 export async function patch(url, data) {
     const response = await fetch(baseURL + url, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: buildHeaders(),
         body: JSON.stringify(data),
     });
     return checkResponse(response);
@@ -66,7 +68,7 @@ export async function patch(url, data) {
 export async function put(url, data) {
     const response = await fetch(baseURL + url, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: buildHeaders(),
         body: JSON.stringify(data),
     });
     return checkResponse(response);

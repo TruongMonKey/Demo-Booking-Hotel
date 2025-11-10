@@ -34,10 +34,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             AuthenticationException authException)
             throws IOException, ServletException {
 
-        // Gọi delegate để Spring set mã 401, header WWW-Authenticate,...
         this.delegate.commence(request, response, authException);
 
-        // Chỉ ghi JSON nếu response chưa được commit
         if (!response.isCommitted()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
@@ -45,12 +43,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             ResResponse<Object> res = new ResResponse<>();
             res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 
-            // Lấy thông báo lỗi chi tiết (nếu có)
             String errorMessage = Optional.ofNullable(authException.getCause())
                     .map(Throwable::getMessage)
                     .orElse(authException.getMessage());
 
-            // Gộp cả thông tin lỗi cụ thể nếu bạn muốn debug
             res.setMessage("Token không hợp lệ: " + errorMessage);
 
             mapper.writeValue(response.getWriter(), res);

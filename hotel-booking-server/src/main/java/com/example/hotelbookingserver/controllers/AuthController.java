@@ -30,7 +30,7 @@ import com.example.hotelbookingserver.utils.JWTUtils;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Value("${developer.jwt.refresh-token-validity-in-seconds}")
@@ -90,7 +90,7 @@ public class AuthController {
     }
 
     // ===================== GET ACCOUNT =====================
-    @GetMapping("/auth/account")
+    @GetMapping("/account")
     @ApiMessage("Fetch account information")
     public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
         String email = JWTUtils.getCurrentUserLogin().orElse("");
@@ -109,7 +109,7 @@ public class AuthController {
     }
 
     // ===================== REFRESH TOKEN =====================
-    @GetMapping("/auth/refresh")
+    @GetMapping("/refresh")
     @ApiMessage("Get new Access Token using Refresh Token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refreshToken)
@@ -157,7 +157,7 @@ public class AuthController {
     }
 
     // ===================== LOGOUT =====================
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     @ApiMessage("Logout User")
     public ResponseEntity<Void> logoutUser() throws IdInvalidException {
         String emailUser = JWTUtils.getCurrentUserLogin().orElse("");
@@ -192,9 +192,6 @@ public class AuthController {
         if (isEmailExist) {
             throw new IdInvalidException("Email " + postUser.getEmail() + " đã tồn tại");
         }
-
-        String hashPassword = this.passwordEncoder.encode(postUser.getPassword());
-        postUser.setPassword(hashPassword);
 
         User newUser = this.userService.handleCreateUser(postUser);
         return ResponseEntity

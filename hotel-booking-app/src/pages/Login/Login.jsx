@@ -51,11 +51,11 @@ function Login() {
                 localStorage.setItem("fullName", response.fullName);
                 localStorage.setItem("email", response.email);
                 localStorage.setItem("phone", response.phone);
-                localStorage.setItem("role", response.role);
+                localStorage.setItem("roles", JSON.stringify(response.roles)); // Save roles as array from backend response
 
-               
-
-                if(response.role === "ADMIN" || response.role === "manager"){
+                // New logic: Check if user is ADMIN or MANAGER via array
+                const roles = response.roles?.map(r => r.name) || [];
+                if(roles.includes("ROLE_ADMIN") || roles.includes("ROLE_MANAGER")){
                     message.success("Đăng nhập thành công");
                     navigate("/admin");
                 }else {
