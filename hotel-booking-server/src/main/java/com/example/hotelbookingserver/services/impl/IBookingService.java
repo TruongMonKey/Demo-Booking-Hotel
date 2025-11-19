@@ -1,14 +1,20 @@
 package com.example.hotelbookingserver.services.impl;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
-import com.example.hotelbookingserver.dtos.Response;
-import com.example.hotelbookingserver.entities.Booking;
+import com.example.hotelbookingserver.dtos.BookingDTO;
+import com.example.hotelbookingserver.dtos.response.Response;
 
 public interface IBookingService {
-    Response saveBooking(UUID roomId, UUID userId, Booking bookingRequest);
 
-    Response getAllBookings();
+    Response<BookingDTO> createBooking(UUID userId, UUID roomTypeId, LocalDate checkIn, LocalDate checkOut,
+            int quantity);
 
-    Response cancelBooking(UUID bookingId);
+    Response<BookingDTO> cancelBooking(UUID bookingId, String reason);
+
+    Response<List<BookingDTO>> getAllBookings();
+
+    void autoCancelExpiredBookings();
 }

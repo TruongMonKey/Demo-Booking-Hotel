@@ -15,17 +15,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Data
+@Getter
+@Setter
 public abstract class BaseEntity {
-    
+
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(columnDefinition = "CHAR(36)", updatable = false)
+    @Column(columnDefinition = "CHAR(36)", updatable = false, nullable = false)
     @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 

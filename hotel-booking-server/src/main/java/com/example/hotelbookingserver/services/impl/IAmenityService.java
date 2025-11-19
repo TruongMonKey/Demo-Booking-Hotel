@@ -1,16 +1,18 @@
 package com.example.hotelbookingserver.services.impl;
 
+import java.util.List;
 import java.util.UUID;
 
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.AmenityDTO;
+import com.example.hotelbookingserver.dtos.response.Response;
 
 public interface IAmenityService {
 
-    Response createAmenity(String name, UUID roomTypeId);
+    Response<AmenityDTO> createAmenity(String name, UUID roomTypeId);
 
-    Response updateAmenity(UUID id, String name);
+    Response<AmenityDTO> updateAmenity(UUID id, String name);
 
-    Response deleteAmenity(UUID id);
+    Response<Void> deleteAmenity(UUID id);
 
-    Response getAmenitiesByRoomTypeId(UUID roomTypeId);
+    Response<List<AmenityDTO>> getAmenitiesByRoomTypeId(UUID roomTypeId);
 }

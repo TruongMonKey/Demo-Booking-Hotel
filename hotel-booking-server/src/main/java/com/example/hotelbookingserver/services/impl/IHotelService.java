@@ -1,16 +1,20 @@
 package com.example.hotelbookingserver.services.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.example.hotelbookingserver.dtos.HotelDTO;
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 
 public interface IHotelService {
 
-    Response getAllHotels();
+    Response<List<HotelDTO>> getAllHotels();
 
-    Response getHotelById(UUID id);
+    Response<HotelDTO> getHotelById(UUID id);
 
-    Response addHotel(HotelDTO requestDTO);
+    Response<HotelDTO> addHotel(HotelDTO requestDTO);
 
+    Response<HotelDTO> updateHotel(UUID hotelId, HotelDTO requestDTO);
+
+    Response<Void> deleteHotel(UUID hotelId);
 }

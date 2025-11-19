@@ -12,13 +12,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class HotelDTO {
+
     private UUID id;
     private String name;
     private MultipartFile thumbnail;
     private String address;
     private String linkMap;
     private String description;
-    private float rate;
+    private Float rate;
     private String checkInTime;
     private String checkOutTime;
     private List<ImageDTO> images;

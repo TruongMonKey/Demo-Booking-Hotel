@@ -28,7 +28,7 @@ import lombok.Setter;
 public class Role extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private ERole name;
 
     private String description;

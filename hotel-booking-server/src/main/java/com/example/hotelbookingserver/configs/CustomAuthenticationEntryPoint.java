@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 
-import com.example.hotelbookingserver.entities.response.ResResponse;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -40,7 +40,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=UTF-8");
 
-            ResResponse<Object> res = new ResResponse<>();
+            Response<Object> res = new Response<>();
             res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 
             String errorMessage = Optional.ofNullable(authException.getCause())

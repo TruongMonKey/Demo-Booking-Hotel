@@ -1,29 +1,21 @@
 package com.example.hotelbookingserver.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import com.example.hotelbookingserver.entities.mapper.BaseEntity;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "hotels")
-public class Hotel {
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "CHAR(36)", updatable = false, nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-    private UUID id;
+public class Hotel extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
@@ -38,7 +30,7 @@ public class Hotel {
     private String description;
 
     @Column(nullable = false)
-    private float rate;
+    private Float rate;
 
     private String checkInTime;
 

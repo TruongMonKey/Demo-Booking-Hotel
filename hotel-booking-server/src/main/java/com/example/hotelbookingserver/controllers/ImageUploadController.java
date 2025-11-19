@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.Image;
 import com.example.hotelbookingserver.repositories.HotelRepository;

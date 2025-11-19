@@ -1,18 +1,14 @@
 package com.example.hotelbookingserver.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.dtos.RoomTypeDTO;
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.Hotel;
@@ -26,8 +22,12 @@ import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.services.impl.IRoomTypeService;
 import com.example.hotelbookingserver.utils.Utils;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class RoomTypeService implements IRoomTypeService {
+
     @Autowired
     private RoomTypeRepository roomTypeRepository;
 
@@ -41,206 +41,200 @@ public class RoomTypeService implements IRoomTypeService {
     private ImageRepository imageRepository;
 
     @Override
-    public Response addNewRoom(RoomTypeDTO dto) {
-        Response response = new Response();
-
+    public Response<RoomTypeDTO> addNewRoom(RoomTypeDTO dto) {
+        Response<RoomTypeDTO> res = new Response<>();
         try {
-            Optional<Hotel> optionalHotel = hotelRepository.findById(dto.getHotelId());
-            if (!optionalHotel.isPresent()) {
-                response.setStatusCode(404);
-                response.setMessage("Hotel with ID " + dto.getHotelId() + " not found.");
-                return response;
-            }
 
-            Hotel hotel = optionalHotel.get();
+            Hotel hotel = hotelRepository.findById(dto.getHotelId())
+                    .orElseThrow(() -> new OurException("Hotel not found"));
 
-            RoomType roomType = new RoomType();
-            roomType.setName(dto.getName());
-            roomType.setQuantityBed(dto.getQuantityBed());
-            roomType.setQuantityPeople(dto.getQuantityPeople());
-            roomType.setRoomArea(dto.getRoomArea());
-            roomType.setPrice(dto.getPrice());
-            roomType.setQuantityRoom(dto.getQuantityRoom());
-            roomType.setHotel(hotel);
-
-            RoomType savedRoomType = roomTypeRepository.save(roomType);
-
-            if (dto.getAmenities() != null) {
-                for (AmenityDTO amenityDTO : dto.getAmenities()) {
-                    Amenity amenity = new Amenity();
-                    amenity.setName(amenityDTO.getName());
-                    amenity.setRoomType(savedRoomType);
-                    amenityRepository.save(amenity);
-                }
-            }
-
-            if (dto.getImageFiles() != null && !dto.getImageFiles().isEmpty()) {
-                for (String url : dto.getImageFiles()) {
-                    Image image = new Image();
-                    image.setRoomType(savedRoomType);
-                    image.setImageUrl(url);
-                    imageRepository.save(image);
-                }
-            }
-
-            RoomTypeDTO responseDTO = Utils.mapRoomEntityToRoomDTO(savedRoomType);
-            response.setStatusCode(201);
-            response.setMessage("Room added successfully");
-            response.setRoom(responseDTO);
-
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error adding room: " + e.getMessage());
-        }
-
-        return response;
-    }
-
-    @Override
-    public Response getAllRoomTypes() {
-        Response response = new Response();
-
-        try {
-            List<RoomType> roomList = roomTypeRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-            List<RoomTypeDTO> roomDTOList = Utils.mapRoomListEntityToRoomListDTO(roomList);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setRoomList(roomDTOList);
-
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error saving a room " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public List<String> getAllRoomTypeNames() {
-        return roomTypeRepository.findDistinctRoomTypeNames();
-    }
-
-    @Override
-    public Response deleteRoom(UUID roomId) {
-        Response response = new Response();
-
-        try {
-            roomTypeRepository.findById(roomId).orElseThrow(() -> new OurException("Room Not Found"));
-            roomTypeRepository.deleteById(roomId);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error saving a room " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getRoomById(UUID roomId) {
-        Response response = new Response();
-
-        try {
-            RoomType room = roomTypeRepository.findById(roomId).orElseThrow(() -> new OurException("Room Not Found"));
-            RoomTypeDTO roomDTO = Utils.mapRoomEntityToRoomDTOPlusBookings(room);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setRoom(roomDTO);
-
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error saving a room " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
-        Response response = new Response();
-
-        try {
-            List<RoomType> availableRooms = roomTypeRepository.findAvailableRoomsByDatesAndTypes(checkInDate,
-                    checkOutDate, roomType);
-            List<RoomTypeDTO> roomDTOList = Utils.mapRoomListEntityToRoomListDTO(availableRooms);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setRoomList(roomDTOList);
-
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error saving a room " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getAllAvailableRoomsByDate(LocalDate checkInDate, LocalDate checkOutDate) {
-        Response response = new Response();
-
-        try {
-            List<RoomType> roomList = roomTypeRepository.getAllAvailableRoomsByDate(checkInDate, checkOutDate);
-            List<RoomTypeDTO> roomDTOList = Utils.mapRoomListEntityToRoomListDTO(roomList);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setRoomList(roomDTOList);
-
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error saving a room " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response updateRoom(RoomTypeDTO dto, UUID roomId) {
-        Response response = new Response();
-
-        try {
-            RoomType room = roomTypeRepository.findById(roomId)
-                    .orElseThrow(() -> new OurException("Room Not Found"));
-
-            // Cập nhật các trường cơ bản
-            if (dto.getName() != null)
-                room.setName(dto.getName());
+            RoomType room = new RoomType();
+            room.setName(dto.getName());
             room.setQuantityBed(dto.getQuantityBed());
             room.setQuantityPeople(dto.getQuantityPeople());
             room.setRoomArea(dto.getRoomArea());
             room.setPrice(dto.getPrice());
             room.setQuantityRoom(dto.getQuantityRoom());
+            room.setHotel(hotel);
 
-            RoomType updatedRoom = roomTypeRepository.save(room);
+            RoomType saved = roomTypeRepository.save(room);
 
-            if (dto.getImageFiles() != null && !dto.getImageFiles().isEmpty()) {
-                for (String url : dto.getImageFiles()) {
-                    Image image = new Image();
-                    image.setRoomType(updatedRoom);
-                    image.setImageUrl(url);
-                    imageRepository.save(image);
+            // ===== AMENITIES =====
+            if (dto.getAmenities() != null) {
+                for (var a : dto.getAmenities()) {
+                    Amenity amenity = new Amenity();
+                    amenity.setName(a.getName());
+                    amenity.setRoomType(saved);
+                    amenityRepository.save(amenity);
                 }
             }
 
-            RoomTypeDTO roomDTO = Utils.mapRoomEntityToRoomDTO(updatedRoom);
-            response.setStatusCode(200);
-            response.setMessage("Cập nhật phòng thành công.");
-            response.setRoom(roomDTO);
+            // ===== IMAGES =====
+            if (dto.getImageFiles() != null) {
+                for (String url : dto.getImageFiles()) {
+                    Image img = new Image();
+                    img.setImageUrl(url);
+                    img.setRoomType(saved);
+                    imageRepository.save(img);
+                }
+            }
+
+            RoomTypeDTO result = Utils.mapRoomEntityToRoomDTO(saved);
+
+            res.setStatusCode(201);
+            res.setMessage("Room created successfully");
+            res.setData(result);
+
+        } catch (Exception e) {
+            res.setStatusCode(500);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
+
+    @Override
+    public Response<List<RoomTypeDTO>> getAllRoomTypes() {
+        Response<List<RoomTypeDTO>> res = new Response<>();
+        try {
+            List<RoomType> rooms = roomTypeRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            res.setStatusCode(200);
+            res.setMessage("Success");
+            res.setData(Utils.mapRoomListEntityToRoomListDTO(rooms));
+        } catch (Exception ex) {
+            res.setStatusCode(500);
+            res.setMessage(ex.getMessage());
+        }
+        return res;
+    }
+
+    @Override
+    public Response<RoomTypeDTO> getRoomById(UUID roomId) {
+        Response<RoomTypeDTO> res = new Response<>();
+        try {
+            RoomType room = roomTypeRepository.findById(roomId)
+                    .orElseThrow(() -> new OurException("Room not found"));
+
+            res.setStatusCode(200);
+            res.setMessage("Success");
+            res.setData(Utils.mapRoomEntityToRoomDTOPlusBookings(room));
 
         } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Lỗi khi cập nhậtphòng: " + e.getMessage());
+            res.setStatusCode(404);
+            res.setMessage(e.getMessage());
         }
-
-        return response;
+        return res;
     }
+
+    @Override
+    public Response<Void> deleteRoom(UUID roomId) {
+        Response<Void> res = new Response<>();
+        try {
+            RoomType room = roomTypeRepository.findById(roomId)
+                    .orElseThrow(() -> new OurException("Room not found"));
+
+            // Xoá ảnh + amenity
+            imageRepository.deleteByRoomType(room);
+            amenityRepository.deleteByRoomType(room);
+
+            roomTypeRepository.delete(room);
+
+            res.setStatusCode(200);
+            res.setMessage("Deleted successfully");
+
+        } catch (OurException e) {
+            res.setStatusCode(404);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
+
+    @Override
+    public Response<List<RoomTypeDTO>> getAllAvailableRoomsByDate(LocalDate checkIn, LocalDate checkOut) {
+        Response<List<RoomTypeDTO>> res = new Response<>();
+        try {
+            List<RoomType> rooms = roomTypeRepository.getAllAvailableRoomsByDate(checkIn, checkOut);
+            res.setStatusCode(200);
+            res.setMessage("Success");
+            res.setData(Utils.mapRoomListEntityToRoomListDTO(rooms));
+        } catch (Exception e) {
+            res.setStatusCode(500);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
+
+    @Override
+    public Response<RoomTypeDTO> updateRoom(RoomTypeDTO dto, UUID roomId) {
+        Response<RoomTypeDTO> res = new Response<>();
+        try {
+
+            RoomType room = roomTypeRepository.findById(roomId)
+                    .orElseThrow(() -> new OurException("Room not found"));
+
+            // update basic fields
+            if (dto.getName() != null)
+                room.setName(dto.getName());
+            if (dto.getQuantityBed() != null)
+                room.setQuantityBed(dto.getQuantityBed());
+            if (dto.getQuantityPeople() != null)
+                room.setQuantityPeople(dto.getQuantityPeople());
+            if (dto.getRoomArea() != null)
+                room.setRoomArea(dto.getRoomArea());
+            if (dto.getPrice() != null)
+                room.setPrice(dto.getPrice());
+            if (dto.getQuantityRoom() != null)
+                room.setQuantityRoom(dto.getQuantityRoom());
+
+            RoomType updated = roomTypeRepository.save(room);
+
+            // =========== UPDATE IMAGES ===========
+            if (dto.getImageFiles() != null) {
+                imageRepository.deleteByRoomType(updated);
+                for (String url : dto.getImageFiles()) {
+                    Image img = new Image();
+                    img.setRoomType(updated);
+                    img.setImageUrl(url);
+                    imageRepository.save(img);
+                }
+            }
+
+            // =========== UPDATE AMENITIES ===========
+            if (dto.getAmenities() != null) {
+                amenityRepository.deleteByRoomType(updated);
+                for (var a : dto.getAmenities()) {
+                    Amenity am = new Amenity();
+                    am.setRoomType(updated);
+                    am.setName(a.getName());
+                    amenityRepository.save(am);
+                }
+            }
+
+            res.setStatusCode(200);
+            res.setMessage("Updated successfully");
+            res.setData(Utils.mapRoomEntityToRoomDTO(updated));
+
+        } catch (OurException e) {
+            res.setStatusCode(404);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
+
+    @Override
+    public Response<List<RoomTypeDTO>> getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate,
+            String roomType) {
+        Response<List<RoomTypeDTO>> res = new Response<>();
+        try {
+            List<RoomType> rooms = roomTypeRepository.findAvailableRoomsByDatesAndTypes(checkInDate, checkOutDate,
+                    roomType);
+            res.setStatusCode(200);
+            res.setMessage("Success");
+            res.setData(Utils.mapRoomListEntityToRoomListDTO(rooms));
+        } catch (Exception e) {
+            res.setStatusCode(500);
+            res.setMessage(e.getMessage());
+        }
+        return res;
+    }
+
 }

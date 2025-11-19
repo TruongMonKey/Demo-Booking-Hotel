@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.dtos.UserDTO;
 import com.example.hotelbookingserver.dtos.response.ResCreateUserDTO;
 import com.example.hotelbookingserver.entities.Role;
@@ -33,18 +33,18 @@ public class UserService implements IUserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Response getAllUsers() {
-        Response response = new Response();
+    @Override
+    public Response<List<UserDTO>> getAllUsers() {
+        Response<List<UserDTO>> response = new Response<>();
         try {
-            List<User> userList = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-
-            List<UserDTO> userDTOList = userList.stream()
+            List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+                    .stream()
                     .map(Utils::mapUserEntityToUserDTOPlusUserBookingsAndRoom)
                     .collect(Collectors.toList());
 
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setUserList(userDTOList);
+            response.setData(userDTOList); // gán danh sách vào field data
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error fetching users: " + e.getMessage());
@@ -53,80 +53,65 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Response getUserBookingHistory(UUID userId) {
-
-        Response response = new Response();
-
+    public Response<UserDTO> getUserBookingHistory(UUID userId) {
+        Response<UserDTO> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User not found with ID: " + userId));
             UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setUser(userDTO);
-
+            response.setData(userDTO); // dùng setData
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
-
         } catch (Exception e) {
-
             response.setStatusCode(500);
-            response.setMessage("Error getting all users " + e.getMessage());
+            response.setMessage("Error getting user booking history: " + e.getMessage());
         }
         return response;
     }
 
     @Override
-    public Response deleteUser(UUID userId) {
-
-        Response response = new Response();
-
+    public Response<Void> deleteUser(UUID userId) {
+        Response<Void> response = new Response<>();
         try {
             userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
             userRepository.deleteById(userId);
             response.setStatusCode(200);
             response.setMessage("successful");
-
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
-
         } catch (Exception e) {
-
             response.setStatusCode(500);
-            response.setMessage("Error getting all users " + e.getMessage());
+            response.setMessage("Error deleting user: " + e.getMessage());
         }
         return response;
     }
 
     @Override
-    public Response getUserById(UUID userId) {
-
-        Response response = new Response();
-
+    public Response<UserDTO> getUserById(UUID userId) {
+        Response<UserDTO> response = new Response<>();
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
             UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setUser(userDTO);
-
+            response.setData(userDTO); // dùng setData
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
-
         } catch (Exception e) {
-
             response.setStatusCode(500);
-            response.setMessage("Error getting all users " + e.getMessage());
+            response.setMessage("Error getting user: " + e.getMessage());
         }
         return response;
     }
 
     @Override
-    public Response updateUserById(UUID userId, UserDTO dto) {
-        Response response = new Response();
+    public Response<UserDTO> updateUserById(UUID userId, UserDTO dto) {
+        Response<UserDTO> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User Not Found"));
@@ -140,9 +125,10 @@ public class UserService implements IUserService {
 
             userRepository.save(user);
 
+            UserDTO updatedDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
             response.setStatusCode(200);
             response.setMessage("User roles updated successfully");
-
+            response.setData(updatedDTO); // dùng setData
         } catch (IllegalArgumentException e) {
             response.setStatusCode(400);
             response.setMessage("Invalid role value: " + dto.getRoles());
@@ -154,25 +140,21 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Response getMyInfo(String email) {
-
-        Response response = new Response();
-
+    public Response<UserDTO> getMyInfo(String email) {
+        Response<UserDTO> response = new Response<>();
         try {
-            User user = userRepository.findByEmail(email).orElseThrow(() -> new OurException("User Not Found"));
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new OurException("User Not Found"));
             UserDTO userDTO = Utils.mapUserEntityToUserDTO(user);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setUser(userDTO);
-
+            response.setData(userDTO); // dùng setData
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
-
         } catch (Exception e) {
-
             response.setStatusCode(500);
-            response.setMessage("Error getting all users " + e.getMessage());
+            response.setMessage("Error getting user info: " + e.getMessage());
         }
         return response;
     }

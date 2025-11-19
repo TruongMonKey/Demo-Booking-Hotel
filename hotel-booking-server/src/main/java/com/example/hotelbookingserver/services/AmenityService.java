@@ -9,27 +9,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.RoomType;
+import com.example.hotelbookingserver.exception.OurException;
 import com.example.hotelbookingserver.repositories.AmenityRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.services.impl.IAmenityService;
+import com.example.hotelbookingserver.utils.Utils;
 
 @Service
 public class AmenityService implements IAmenityService {
+
     @Autowired
     private AmenityRepository amenityRepository;
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
 
+    // ========================= CREATE =========================
     @Override
-    public Response createAmenity(String name, UUID roomTypeId) {
-        Response response = new Response();
+    public Response<AmenityDTO> createAmenity(String name, UUID roomTypeId) {
+        Response<AmenityDTO> response = new Response<>();
         try {
             RoomType roomType = roomTypeRepository.findById(roomTypeId)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng"));
+                    .orElseThrow(() -> new OurException("Không tìm thấy loại phòng"));
 
             Amenity amenity = new Amenity();
             amenity.setName(name);
@@ -37,11 +41,13 @@ public class AmenityService implements IAmenityService {
 
             Amenity saved = amenityRepository.save(amenity);
 
-            AmenityDTO dto = new AmenityDTO(saved.getId(), saved.getName(), roomTypeId);
-
             response.setStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Tạo tiện nghi thành công");
-            response.setAmenityList(List.of(dto));
+            response.setData(Utils.mapAmenityEntityToDTO(saved));
+
+        } catch (OurException e) {
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Lỗi khi tạo tiện nghi: " + e.getMessage());
@@ -49,40 +55,47 @@ public class AmenityService implements IAmenityService {
         return response;
     }
 
+    // ========================= UPDATE =========================
     @Override
-    public Response updateAmenity(UUID id, String name) {
-        Response response = new Response();
+    public Response<AmenityDTO> updateAmenity(UUID id, String name) {
+        Response<AmenityDTO> response = new Response<>();
         try {
             Amenity amenity = amenityRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tiện nghi"));
+                    .orElseThrow(() -> new OurException("Không tìm thấy tiện nghi"));
 
             amenity.setName(name);
             Amenity updated = amenityRepository.save(amenity);
 
-            AmenityDTO dto = new AmenityDTO(updated.getId(), updated.getName(), updated.getRoomType().getId());
-
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Cập nhật tiện nghi thành công");
-            response.setAmenityList(List.of(dto));
-        } catch (Exception e) {
+            response.setData(Utils.mapAmenityEntityToDTO(updated));
+
+        } catch (OurException e) {
             response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Lỗi khi cập nhật tiện nghi: " + e.getMessage());
         }
         return response;
     }
 
+    // ========================= DELETE =========================
     @Override
-    public Response deleteAmenity(UUID id) {
-        Response response = new Response();
+    public Response<Void> deleteAmenity(UUID id) {
+        Response<Void> response = new Response<>();
         try {
             if (!amenityRepository.existsById(id)) {
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
                 response.setMessage("Không tìm thấy tiện nghi để xoá");
                 return response;
             }
+
             amenityRepository.deleteById(id);
+
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Xoá tiện nghi thành công");
+
         } catch (Exception e) {
             response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Lỗi khi xoá tiện nghi: " + e.getMessage());
@@ -90,21 +103,26 @@ public class AmenityService implements IAmenityService {
         return response;
     }
 
+    // ========================= GET BY ROOM TYPE =========================
     @Override
-    public Response getAmenitiesByRoomTypeId(UUID roomTypeId) {
-        Response response = new Response();
+    public Response<List<AmenityDTO>> getAmenitiesByRoomTypeId(UUID roomTypeId) {
+        Response<List<AmenityDTO>> response = new Response<>();
         try {
             RoomType roomType = roomTypeRepository.findById(roomTypeId)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phòng"));
+                    .orElseThrow(() -> new OurException("Không tìm thấy loại phòng"));
 
             List<AmenityDTO> dtos = amenityRepository.findByRoomType(roomType)
                     .stream()
-                    .map(a -> new AmenityDTO(a.getId(), a.getName(), roomTypeId))
+                    .map(Utils::mapAmenityEntityToDTO)
                     .collect(Collectors.toList());
 
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Lấy danh sách tiện nghi thành công");
-            response.setAmenityList(dtos);
+            response.setData(dtos);
+
+        } catch (OurException e) {
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             response.setMessage("Lỗi khi lấy tiện nghi: " + e.getMessage());

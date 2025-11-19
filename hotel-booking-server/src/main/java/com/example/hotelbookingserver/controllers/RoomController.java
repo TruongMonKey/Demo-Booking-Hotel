@@ -1,6 +1,5 @@
 package com.example.hotelbookingserver.controllers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -8,107 +7,85 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import com.example.hotelbookingserver.dtos.Response;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.hotelbookingserver.dtos.RoomTypeDTO;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.services.impl.IBookingService;
 import com.example.hotelbookingserver.services.impl.IRoomTypeService;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/roomtypes")
 @CrossOrigin
 public class RoomController {
+
     @Autowired
     private IRoomTypeService roomService;
 
     @Autowired
-    private IBookingService iBookingService;
+    private IBookingService bookingService;
 
+    // CREATE
     @PostMapping("/add")
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> addNewRoom(@RequestBody RoomTypeDTO request) {
-        if (request.getName() == null || request.getName().isEmpty() || request.getPrice() == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields (name, price)");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
+    public ResponseEntity<Response<RoomTypeDTO>> addNewRoom(@RequestBody RoomTypeDTO request) {
+        if (request.getName() == null || request.getName().isBlank() || request.getPrice() == null) {
+            Response<RoomTypeDTO> errorResponse = new Response<>();
+            errorResponse.setStatusCode(400);
+            errorResponse.setMessage("Please provide values for all fields (name, price)");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
-
-        Response response = roomService.addNewRoom(request);
+        Response<RoomTypeDTO> response = roomService.addNewRoom(request);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    // READ
     @GetMapping("/all")
-    public ResponseEntity<Response> getAllRooms() {
-        Response response = roomService.getAllRoomTypes();
+    public ResponseEntity<Response<List<RoomTypeDTO>>> getAllRooms() {
+        Response<List<RoomTypeDTO>> response = roomService.getAllRoomTypes();
         return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-
-    @GetMapping("/types")
-    public List<String> getRoomTypes() {
-        return roomService.getAllRoomTypeNames();
     }
 
     @GetMapping("/room-by-id/{roomId}")
-    public ResponseEntity<Response> getRoomById(@PathVariable UUID roomId) {
-        Response response = roomService.getRoomById(roomId);
+    public ResponseEntity<Response<RoomTypeDTO>> getRoomById(@PathVariable UUID roomId) {
+        Response<RoomTypeDTO> response = roomService.getRoomById(roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/all-available-rooms") // loi
-    public ResponseEntity<Response> getAvailableRooms(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate) {
-        if (checkInDate == null || checkOutDate == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields(checkInDate, checkOutDate)");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
-        }
-        Response response = roomService.getAllAvailableRoomsByDate(checkInDate, checkOutDate);
+    @GetMapping("/all-available-rooms")
+    public ResponseEntity<Response<List<RoomTypeDTO>>> getAvailableRooms(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate) {
+
+        Response<List<RoomTypeDTO>> response = roomService.getAllAvailableRoomsByDate(checkInDate, checkOutDate);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/available-rooms-by-date-and-type") // loi
-    public ResponseEntity<Response> getAvailableRoomsByDateAndType(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam(required = false) String roomType) {
-        if (checkInDate == null || roomType == null || roomType.isBlank() || checkOutDate == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields(checkInDate, roomType,checkOutDate)");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
-        }
-        Response response = roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate, roomType);
+    @GetMapping("/available-rooms-by-date-and-type")
+    public ResponseEntity<Response<List<RoomTypeDTO>>> getAvailableRoomsByDateAndType(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam String roomType) {
+
+        Response<List<RoomTypeDTO>> response = roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate,
+                roomType);
+
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    // UPDATE
     @PutMapping("/update/{roomId}")
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> updateRoom(
+    public ResponseEntity<Response<RoomTypeDTO>> updateRoom(
             @PathVariable UUID roomId,
             @RequestBody RoomTypeDTO roomTypeDTO) {
 
-        Response response = roomService.updateRoom(roomTypeDTO, roomId);
+        Response<RoomTypeDTO> response = roomService.updateRoom(roomTypeDTO, roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    // DELETE
     @DeleteMapping("/delete/{roomId}")
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> deleteRoom(@PathVariable UUID roomId) {
-        Response response = roomService.deleteRoom(roomId);
+    public ResponseEntity<Response<Void>> deleteRoom(@PathVariable UUID roomId) {
+        Response<Void> response = roomService.deleteRoom(roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
-
     }
 }

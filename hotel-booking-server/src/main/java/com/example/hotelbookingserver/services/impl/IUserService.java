@@ -2,7 +2,7 @@ package com.example.hotelbookingserver.services.impl;
 
 import java.util.UUID;
 
-import com.example.hotelbookingserver.dtos.Response;
+import com.example.hotelbookingserver.dtos.response.Response;
 import com.example.hotelbookingserver.dtos.UserDTO;
 import com.example.hotelbookingserver.entities.User;
 
