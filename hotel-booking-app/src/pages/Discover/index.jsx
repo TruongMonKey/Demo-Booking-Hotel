@@ -37,7 +37,7 @@ function Discover() {
     localStorage.removeItem("fullName");
     localStorage.removeItem("email");
     localStorage.removeItem("phone");
-    localStorage.removeItem("role");
+    localStorage.removeItem("roles");
     localStorage.removeItem("userId")
   }
 
@@ -45,7 +45,9 @@ function Discover() {
     const fetchAPI = async () => {
       try {
         const response = await getHotels();
-        setHotels(response.hotelList);
+        // Normalize: handle both array and { data: array } response
+        const hotelList = Array.isArray(response) ? response : (response?.data || []);
+        setHotels(hotelList);
         
       } catch (error) {
         console.error("Lỗi khi tải danh sách khách sạn:", error);

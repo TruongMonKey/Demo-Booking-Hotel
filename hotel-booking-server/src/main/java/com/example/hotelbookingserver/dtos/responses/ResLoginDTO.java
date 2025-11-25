@@ -1,9 +1,8 @@
 package com.example.hotelbookingserver.dtos.response;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
-import com.example.hotelbookingserver.entities.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +12,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResLoginDTO {
     @JsonProperty("access_token")
     private String accessToken;
@@ -27,15 +28,8 @@ public class ResLoginDTO {
         private UUID id;
         private String email;
         private String name;
-        private Set<Role> roles;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserGetAccount {
-        private UserLogin user;
+        private List<String> roles;
+        private List<String> permissions;
     }
 
     @Getter

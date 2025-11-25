@@ -10,8 +10,16 @@ function ListRoom() {
   const [rooms, setRooms] = useState([]);
 
   const fetchAPI = async () => {
-    const response = await getHotels();
-    setRooms(response.hotelList);
+    try {
+      const response = await getHotels();
+      console.log("[ListRoom] API Response:", response);
+      // Normalize: handle both array and { data: array } response
+      const hotelList = Array.isArray(response) ? response : (response?.data || []);
+      console.log("[ListRoom] Normalized hotels:", hotelList);
+      setRooms(hotelList);
+    } catch (error) {
+      console.error("[ListRoom] API Error:", error);
+    }
   }
   
   useEffect(() => {

@@ -5,26 +5,33 @@ import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.Reviews;
 import com.example.hotelbookingserver.entities.RoomType;
 import com.example.hotelbookingserver.repositories.AmenityRepository;
+import com.example.hotelbookingserver.repositories.BookingRepository;
 import com.example.hotelbookingserver.repositories.HotelRepository;
+import com.example.hotelbookingserver.repositories.ImageRepository;
 import com.example.hotelbookingserver.repositories.ReviewsRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.services.impl.IHotelService;
 import com.example.hotelbookingserver.utils.Utils;
 import com.example.hotelbookingserver.dtos.HotelDTO;
 import com.example.hotelbookingserver.dtos.response.Response;
-import com.example.hotelbookingserver.dtos.ReviewsDTO;
+import com.example.hotelbookingserver.dtos.ReviewDTO;
 import com.example.hotelbookingserver.dtos.RoomTypeDTO;
 import com.example.hotelbookingserver.dtos.AmenityDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class HotelService implements IHotelService {
+
+        private static final Logger logger = LoggerFactory.getLogger(HotelService.class);
 
         @Autowired
         private HotelRepository hotelRepository;
@@ -40,6 +47,15 @@ public class HotelService implements IHotelService {
 
         @Autowired
         private CloudinaryService cloudinaryService;
+
+        @Autowired
+        private BookingRepository bookingRepository;
+
+        @Autowired
+        private ImageRepository imageRepository;
+
+        @Autowired
+        private ReviewsRepository reviewRepository;
 
         @Override
         public Response<List<HotelDTO>> getAllHotels() {
@@ -81,6 +97,7 @@ public class HotelService implements IHotelService {
         }
 
         @Override
+        @Transactional
         public Response<HotelDTO> addHotel(HotelDTO requestDTO) {
                 Response<HotelDTO> response = new Response<>();
                 try {
@@ -127,7 +144,7 @@ public class HotelService implements IHotelService {
 
                         // Upload reviews
                         if (requestDTO.getReviews() != null) {
-                                for (ReviewsDTO rDTO : requestDTO.getReviews()) {
+                                for (ReviewDTO rDTO : requestDTO.getReviews()) {
                                         Reviews review = new Reviews();
                                         review.setRating(rDTO.getRating());
                                         review.setContent(rDTO.getContent());
@@ -149,6 +166,7 @@ public class HotelService implements IHotelService {
         }
 
         @Override
+        @Transactional
         public Response<HotelDTO> updateHotel(UUID hotelId, HotelDTO requestDTO) {
                 Response<HotelDTO> response = new Response<>();
                 try {
@@ -169,6 +187,10 @@ public class HotelService implements IHotelService {
                                 hotel.setCheckInTime(requestDTO.getCheckInTime());
                         if (requestDTO.getCheckOutTime() != null)
                                 hotel.setCheckOutTime(requestDTO.getCheckOutTime());
+                        if (requestDTO.getThumbnail() != null && !requestDTO.getThumbnail().isEmpty()) {
+                                String thumbnailUrl = cloudinaryService.uploadToCloudinary(requestDTO.getThumbnail());
+                                hotel.setThumbnail(thumbnailUrl);
+                        }
 
                         Hotel updatedHotel = hotelRepository.save(hotel);
                         response.setStatusCode(200);
@@ -182,18 +204,30 @@ public class HotelService implements IHotelService {
         }
 
         @Override
+        @Transactional
         public Response<Void> deleteHotel(UUID hotelId) {
                 Response<Void> response = new Response<>();
                 try {
                         Hotel hotel = hotelRepository.findById(hotelId)
                                         .orElseThrow(() -> new RuntimeException("Hotel Not Found"));
-                        hotelRepository.deleteById(hotelId);
+
+                        bookingRepository.deleteByHotelId(hotelId);
+                        roomTypeRepository.deleteByHotelId(hotelId);
+                        imageRepository.deleteByHotelId(hotelId);
+                        reviewRepository.deleteByHotelId(hotelId);
+
+                        hotelRepository.delete(hotel);
+
                         response.setStatusCode(200);
                         response.setMessage("Delete hotel successfully");
+                        response.setData(null);
+                        return response;
                 } catch (Exception e) {
+                        logger.error("Error deleting hotel {}: {}", hotelId, e.getMessage(), e);
                         response.setStatusCode(500);
                         response.setMessage("Error deleting hotel: " + e.getMessage());
+                        response.setData(null);
+                        return response;
                 }
-                return response;
         }
 }

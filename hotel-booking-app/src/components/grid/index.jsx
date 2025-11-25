@@ -19,8 +19,6 @@ const StatsCard = ({ title, value, icon }) => {
   );
 };
 
-
-
 const AdditionalStats = ({ bookings }) => {
   if (!bookings || bookings.length === 0) {
     return (
@@ -36,7 +34,7 @@ const AdditionalStats = ({ bookings }) => {
 
   const total = bookings.length;
   const cancelled = bookings.filter(b => b.status?.toLowerCase() === 'cancelled').length;
-  const confirmed = bookings.filter(b => b.status?.toLowerCase() === 'confirmed').length;
+  const confirmed = bookings.filter(b => b.status?.toLowerCase() === 'active').length;
   const pending = bookings.filter(b => b.status?.toLowerCase() === 'pending').length;
 
   const calculateRate = (count) => ((count / total) * 100).toFixed(1);
@@ -44,7 +42,7 @@ const AdditionalStats = ({ bookings }) => {
   const cancelRate = calculateRate(cancelled);
   const occupancyRate = calculateRate(confirmed);
   const pendingRate = calculateRate(pending);
-  const successRate = occupancyRate; // Bạn có thể thay đổi logic tính nếu cần
+  const successRate = occupancyRate; // logic tạm thời
 
   return (
     <div className="additional-stats col box-11">
@@ -68,17 +66,16 @@ const AdditionalStats = ({ bookings }) => {
 };
 
 function Grid() {
-  const [data, setData] = useState();
+  const [data, setData] = useState([]); // mảng rỗng
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const  bookings  = await getBookings()
-        setData( bookings );
-        console.log(bookings);
-        
+        const response = await getBookings();
+        setData(response.data || []); // lấy trực tiếp response.data
+        console.log(response.data);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error.message);
       } finally {
@@ -89,9 +86,6 @@ function Grid() {
     fetchData();
   }, []);
 
-
-  
-
   if (loading) return <p>Đang tải dữ liệu...</p>;
 
   return (
@@ -99,34 +93,32 @@ function Grid() {
       <main className="dashboard-main">
         <Row gutter={[20, 25]}>
           <Col xxl={8} xl={8} lg={8} md={12} sm={24} xs={24}>
-            <StatsCard title="Tổng đặt phòng" value={128} icon="📋" />
+            <StatsCard title="Tổng đặt phòng" value={data.length} icon="📋" />
           </Col>
           <Col xxl={8} xl={8} lg={8} md={12} sm={24} xs={24}>
-            <StatsCard title="Doanh thu" value={`${(49380000).toLocaleString('vi-VN')}` + ' VND'} icon="💰" />
+            <StatsCard title="Doanh thu" value={`${(data.reduce((sum, b) => sum + b.totalPrice, 0)).toLocaleString('vi-VN')} VND`} icon="💰" />
           </Col>
           <Col xxl={8} xl={8} lg={8} md={12} sm={24} xs={24}>
-            <StatsCard title="Khách hàng mới" value={28} icon="👥" />
+            <StatsCard title="Khách hàng mới" value={data.length} icon="👥" />
           </Col>
           <Col xxl={16} xl={16} lg={16} md={24} sm={24} xs={24}>
             <div className="col box-5">
-              <MultiLine data={data.bookingList} />
+              <MultiLine data={data} />
             </div>
           </Col>
           <Col xxl={8} xl={8} lg={8} md={24} sm={24} xs={24}>
             <div className="col box-6">
-              <DemoRadar data={data.bookingList} />
+              <DemoRadar data={data} />
             </div>
           </Col>
           <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-            <BookingTable bookings={data.bookingList} />
+            <BookingTable bookings={data} />
           </Col>
           <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-            <AdditionalStats
-              bookings={data.bookingList}
-            />
+            <AdditionalStats bookings={data} />
           </Col>
           <Col xxl={24} xl={24} lg={24} md={24} sm={24} xs={24}>
-            <Button type='primary' size='large' onClick={() => exportBookingsToExcel(data.bookingList)}>
+            <Button type='primary' size='large' onClick={() => exportBookingsToExcel(data)}>
               <h3>Xuất báo cáo đặt phòng</h3>
             </Button>
             <span>(File Excel)</span>

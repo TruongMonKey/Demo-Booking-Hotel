@@ -7,15 +7,24 @@ export function Account() {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
 
-    const role = localStorage.getItem("role")
+    const rolesStr = localStorage.getItem("roles");
+    const roles = rolesStr ? JSON.parse(rolesStr) : [];
+    const hasAdminRole = Array.isArray(roles) && roles.includes("ROLE_ADMIN");
 
     const fetchUsers = async () => {
-        const response = await getAllUser();
-        setUsers(response.userList);
+        try {
+            const response = await getAllUser();
+            // Normalize: handle both array and { data: array } response
+            const userList = Array.isArray(response) ? response : (response?.data || []);
+            setUsers(userList);
+        } catch (error) {
+            console.error('Lỗi khi tải danh sách người dùng:', error);
+            message.error('Không thể tải danh sách người dùng');
+        }
     };
 
     useEffect(() => {
-        if (role !== 'ADMIN') {
+        if (!hasAdminRole) {
             alert("Bạn không có quyền truy cập");
             navigate('/admin'); 
         }

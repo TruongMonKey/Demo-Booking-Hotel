@@ -34,7 +34,9 @@ function Detail() {
     useEffect(() => {
         const fetchHotel = async () => {
             const response = await getHotelByID(param.id);
-            setData(response.hotelList[0]);
+            // Normalize: handle both object and { data: object } response
+            const hotel = typeof response === 'object' && response?.data ? response.data : response;
+            setData(hotel);
         };
         fetchHotel();
     }, [param]);

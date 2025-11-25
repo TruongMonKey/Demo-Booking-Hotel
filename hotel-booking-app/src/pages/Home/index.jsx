@@ -1,20 +1,23 @@
+// src/pages/Home/Home.jsx
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Button, Layout, Pagination } from "antd";
+import { Button, Layout, Pagination, Input } from "antd";
 import './Home.scss';
+
 import video_background from '../../videos/video_background3.mp4';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import LanguageSelector from "../../components/LanguageSelector";
+import { LeftOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
 import { BsArrowRight } from "react-icons/bs";
+
+import LanguageSelector from "../../components/LanguageSelector";
 import TopMenu from "../../components/TopMenu";
-import { Input } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import GridHotel from "../../components/GridHotel";
+
 import { getHotels } from "../../Service/HotelService";
 
 const { Content, Footer } = Layout;
 
 function capitalizeWords(str) {
+  if (!str) return "";
   return str
     .toLowerCase()
     .split(' ')
@@ -27,7 +30,7 @@ export default function Home() {
   const [keyword, setKeyword] = useState("");
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8); // Số hotel hiển thị mỗi trang
+  const [pageSize, setPageSize] = useState(8);
   const [totalHotels, setTotalHotels] = useState(0);
 
   const token = localStorage.getItem("accessToken");
@@ -46,9 +49,17 @@ export default function Home() {
     const fetchAPI = async () => {
       try {
         const response = await getHotels();
-        const list = response?.hotelList ?? []; // fallback nếu undefined
+        console.debug("[Home] getHotels response:", response);
+
+        // Normalize: support both (a) service returns array, (b) service returns object { data: [...] }
+        const list = Array.isArray(response) ? response : (response?.data ?? []);
+        console.debug("[Home] normalized hotel list length:", Array.isArray(list) ? list.length : 0);
+
         setData(list);
-        setTotalHotels(list.length);
+        setTotalHotels(Array.isArray(list) ? list.length : 0);
+
+        // Reset to first page when data changes
+        setCurrentPage(1);
       } catch (error) {
         console.error("Lỗi khi gọi API khách sạn:", error);
         setData([]);
@@ -63,19 +74,20 @@ export default function Home() {
     navigate(`/discover?keyword=${encodeURIComponent(keyword.trim())}`);
   };
 
-  // Tính toán dữ liệu hiển thị cho trang hiện tại
+  // Tính dữ liệu từng trang
   const getCurrentPageData = () => {
+    if (!Array.isArray(data) || data.length === 0) return [];
     const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return data.slice(startIndex, endIndex);
+    return data.slice(startIndex, startIndex + pageSize);
   };
 
-  // Xử lý thay đổi trang
   const handlePageChange = (page, size) => {
     setCurrentPage(page);
     setPageSize(size);
-    // Scroll to top khi chuyển trang
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   };
 
   return (
@@ -86,6 +98,7 @@ export default function Home() {
             <source src={video_background} type="video/mp4" />
             Trình duyệt của bạn không hỗ trợ video.
           </video>
+
           <div className="content">
             <div className="login-language">
               {token ? (
@@ -97,30 +110,41 @@ export default function Home() {
                   Đăng nhập <RightOutlined /> /
                 </Link>
               )}
+
               <LanguageSelector />
+
               <div className="profile">
                 {token ? (
-                  <Link to='/profile'>{capitalizeWords(localStorage.getItem("fullName"))}</Link>
-                ) : (
-                  <></>
-                )}
+                  <Link to='/profile'>
+                    {capitalizeWords(localStorage.getItem("fullName") || "")}
+                  </Link>
+                ) : null}
               </div>
             </div>
+
             <div className="logo">
-              <Link to={"/"}>HotelBooking.com</Link>
+              <Link to="/">HotelBooking.com</Link>
             </div>
-            <div className="menu"><TopMenu /></div>
+
+            <div className="menu">
+              <TopMenu />
+            </div>
+
             <div className="title">Tìm chỗ nghỉ tiếp theo</div>
-            <div className="desciption">Tìm ưu đãi khách sạn, chỗ nghỉ dạng nhà và nhiều hơn nữa...</div>
+            <div className="desciption">
+              Tìm ưu đãi khách sạn, chỗ nghỉ dạng nhà và nhiều hơn nữa...
+            </div>
+
             <Button className="button-discover">
-              <Link to={'/discover'}>
+              <Link to="/discover">
                 <span>Khám phá</span>
                 <BsArrowRight />
               </Link>
             </Button>
           </div>
         </div>
-        {/* search mới */}
+
+        {/* Thanh tìm kiếm */}
         <div className="search">
           <div className="hotel-search-bar noborder">
             <div className="search-item">
@@ -134,6 +158,7 @@ export default function Home() {
                 onPressEnter={handleSearch}
               />
             </div>
+
             <Button type="primary" className="search-button" onClick={handleSearch}>
               Tìm
             </Button>
@@ -143,15 +168,15 @@ export default function Home() {
 
       <Content className="layout-welcome__conten">
         <h1 className="title">Gợi ý các chỗ nghỉ cho bạn</h1>
+
         <GridHotel data={getCurrentPageData()} />
 
-        {/* Pagination Component */}
         {totalHotels > 0 && (
           <div style={{
             display: 'flex',
             justifyContent: 'center',
-            marginTop: '40px',
-            marginBottom: '20px'
+            marginTop: 40,
+            marginBottom: 20
           }}>
             <Pagination
               current={currentPage}
@@ -164,18 +189,6 @@ export default function Home() {
                 `${range[0]}-${range[1]} của ${total} khách sạn`
               }
               pageSizeOptions={['8', '16', '24', '32']}
-              locale={{
-                items_per_page: '/ trang',
-                jump_to: 'Đến trang',
-                jump_to_confirm: 'xác nhận',
-                page: '',
-                prev_page: 'Trang trước',
-                next_page: 'Trang sau',
-                prev_5: '5 trang trước',
-                next_5: '5 trang sau',
-                prev_3: '3 trang trước',
-                next_3: '3 trang sau'
-              }}
             />
           </div>
         )}

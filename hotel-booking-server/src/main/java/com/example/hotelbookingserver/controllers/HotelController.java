@@ -47,4 +47,23 @@ public class HotelController {
                 .status(response.getStatusCode())
                 .body(response);
     }
+
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response<HotelDTO>> updateHotel(
+            @PathVariable UUID id,
+            @ModelAttribute HotelDTO requestDTO) {
+        requestDTO.setId(id);
+        Response<HotelDTO> response = hotelService.updateHotel(id, requestDTO);
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Response<Void>> deleteHotel(@PathVariable UUID id) {
+        Response<Void> response = hotelService.deleteHotel(id);
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
+    }
 }

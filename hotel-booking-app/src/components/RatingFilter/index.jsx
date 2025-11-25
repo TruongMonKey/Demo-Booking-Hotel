@@ -10,7 +10,9 @@ export default function RatingFilter({ onFilter }) {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const hotels = await getHotels();
+        const response = await getHotels();
+        // Normalize: handle both array and { data: array } response
+        const hotels = Array.isArray(response) ? response : (response?.data || []);
 
         const ratingCounts = {
           1: 0, // 1 sao
@@ -20,7 +22,7 @@ export default function RatingFilter({ onFilter }) {
           5: 0, // 5 sao
         };
 
-        hotels.forEach((hotel) => {
+        hotels?.forEach((hotel) => {
           // Làm tròn xuống số sao từ rate
           const star = Math.floor(hotel.rate);
           if (star >= 1 && star <= 5) {

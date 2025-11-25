@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dropdown, Menu, Button } from "antd";
+import { Dropdown, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import './LanguageSelector.scss'
 
@@ -18,18 +18,13 @@ const LanguageSelector = () => {
     }
   };
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      {languages.map((lang) => (
-        <Menu.Item key={lang.key}>
-          {lang.label}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+  const menuItems = languages.map((lang) => ({
+    key: lang.key,
+    label: lang.label,
+  }));
 
   return (
-    <Dropdown overlay={menu} trigger={["click"]}>
+    <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={["click"]}>
       <Button className="button--language">
         {selectedLanguage} <DownOutlined />
       </Button>

@@ -13,7 +13,8 @@ const BookingTable = ({ bookings }) => {
         uniqueHotelIds.map(async (id) => {
           try {
             const response = await getHotelByID(id);
-            const hotel = response?.hotelList?.[0]; // Lấy khách sạn đầu tiên từ hotelList
+            // Normalize: handle both object and { data: object } response
+            const hotel = typeof response === 'object' && response?.data ? response.data : response;
             return [id, hotel];
           } catch (error) {
             console.error(`Error fetching hotel ${id}:`, error);

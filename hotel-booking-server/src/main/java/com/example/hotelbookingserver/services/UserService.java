@@ -11,8 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.BookingDTO;
 import com.example.hotelbookingserver.dtos.UserDTO;
 import com.example.hotelbookingserver.dtos.response.ResCreateUserDTO;
+import com.example.hotelbookingserver.dtos.response.ResLoginDTO;
 import com.example.hotelbookingserver.entities.Role;
 import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.entities.constants.ERole;
@@ -24,6 +26,7 @@ import com.example.hotelbookingserver.utils.Utils;
 
 @Service
 public class UserService implements IUserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -33,18 +36,22 @@ public class UserService implements IUserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    // ==========================================================
+    // 1. GET ALL USERS
+    // ==========================================================
+
     @Override
     public Response<List<UserDTO>> getAllUsers() {
         Response<List<UserDTO>> response = new Response<>();
         try {
-            List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+            List<UserDTO> data = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
                     .stream()
                     .map(Utils::mapUserEntityToUserDTOPlusUserBookingsAndRoom)
                     .collect(Collectors.toList());
 
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setData(userDTOList); // gán danh sách vào field data
+            response.setData(data);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error fetching users: " + e.getMessage());
@@ -52,34 +59,52 @@ public class UserService implements IUserService {
         return response;
     }
 
+    // ==========================================================
+    // 2. GET USER BOOKING HISTORY
+    // ==========================================================
+
     @Override
-    public Response<UserDTO> getUserBookingHistory(UUID userId) {
-        Response<UserDTO> response = new Response<>();
+    public Response<List<BookingDTO>> getUserBookingHistory(UUID userId) {
+        Response<List<BookingDTO>> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new OurException("User not found with ID: " + userId));
-            UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+                    .orElseThrow(() -> new OurException("User not found"));
+
+            List<BookingDTO> bookings = Utils.mapBookingListEntityToBookingListDTO(user.getBookings(), true, true,
+                    true);
+
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setData(userDTO); // dùng setData
+            response.setData(bookings);
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error getting user booking history: " + e.getMessage());
+            response.setMessage("Error getting booking history: " + e.getMessage());
         }
+
         return response;
     }
 
+    // ==========================================================
+    // 3. DELETE USER
+    // ==========================================================
+
     @Override
-    public Response<Void> deleteUser(UUID userId) {
-        Response<Void> response = new Response<>();
+    public Response<String> deleteUser(UUID userId) {
+        Response<String> response = new Response<>();
         try {
-            userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
+            userRepository.findById(userId)
+                    .orElseThrow(() -> new OurException("User not found"));
+
             userRepository.deleteById(userId);
+
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("User deleted successfully");
+            response.setData("deleted");
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -90,15 +115,23 @@ public class UserService implements IUserService {
         return response;
     }
 
+    // ==========================================================
+    // 4. GET USER BY ID
+    // ==========================================================
+
     @Override
     public Response<UserDTO> getUserById(UUID userId) {
         Response<UserDTO> response = new Response<>();
         try {
-            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
-            UserDTO userDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new OurException("User Not Found"));
+
+            UserDTO dto = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setData(userDTO); // dùng setData
+            response.setData(dto);
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -109,6 +142,10 @@ public class UserService implements IUserService {
         return response;
     }
 
+    // ==========================================================
+    // 5. UPDATE USER
+    // ==========================================================
+
     @Override
     public Response<UserDTO> updateUserById(UUID userId, UserDTO dto) {
         Response<UserDTO> response = new Response<>();
@@ -116,28 +153,35 @@ public class UserService implements IUserService {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User Not Found"));
 
-            // Cập nhật roles
-            Set<Role> newRoles = dto.getRoles().stream()
+            // Update roles
+            Set<Role> roles = dto.getRoles().stream()
                     .map(roleStr -> roleRepository.findByName(ERole.valueOf(roleStr))
                             .orElseThrow(() -> new OurException("Role not found: " + roleStr)))
                     .collect(Collectors.toSet());
-            user.setRoles(newRoles);
 
+            user.setRoles(roles);
             userRepository.save(user);
 
-            UserDTO updatedDTO = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            UserDTO updated = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+
             response.setStatusCode(200);
-            response.setMessage("User roles updated successfully");
-            response.setData(updatedDTO); // dùng setData
+            response.setMessage("Update successful");
+            response.setData(updated);
+
         } catch (IllegalArgumentException e) {
             response.setStatusCode(400);
-            response.setMessage("Invalid role value: " + dto.getRoles());
+            response.setMessage("Invalid role: " + e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Update failed: " + e.getMessage());
         }
+
         return response;
     }
+
+    // ==========================================================
+    // 6. GET LOGGED-IN USER INFO
+    // ==========================================================
 
     @Override
     public Response<UserDTO> getMyInfo(String email) {
@@ -145,19 +189,26 @@ public class UserService implements IUserService {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new OurException("User Not Found"));
-            UserDTO userDTO = Utils.mapUserEntityToUserDTO(user);
+
+            UserDTO dto = Utils.mapUserEntityToUserDTO(user);
+
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setData(userDTO); // dùng setData
+            response.setData(dto);
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error getting user info: " + e.getMessage());
+            response.setMessage("Error: " + e.getMessage());
         }
         return response;
     }
+
+    // ==========================================================
+    // AUTH HELPER METHODS
+    // ==========================================================
 
     @Override
     public User handleGetUserByUsername(String username) {
@@ -166,21 +217,21 @@ public class UserService implements IUserService {
 
     @Override
     public void updateUserToken(String token, String email) {
-        User currentUser = this.handleGetUserByUsername(email);
+        User currentUser = handleGetUserByUsername(email);
         if (currentUser != null) {
             currentUser.setRefreshToken(token);
-            this.userRepository.save(currentUser);
+            userRepository.save(currentUser);
         }
     }
 
     @Override
     public User getUserByRefreshTokenAndEmail(String token, String email) {
-        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+        return userRepository.findByRefreshTokenAndEmail(token, email);
     }
 
     @Override
     public boolean isEmailExist(String email) {
-        return this.userRepository.existsByEmail(email);
+        return userRepository.existsByEmail(email);
     }
 
     @Override
@@ -189,7 +240,7 @@ public class UserService implements IUserService {
 
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
             Role defaultRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
-                    .orElseThrow(() -> new OurException("Default role not found"));
+                    .orElseThrow(() -> new OurException("Default role missing"));
             user.setRoles(Set.of(defaultRole));
         } else {
             Set<Role> roles = user.getRoles().stream()
@@ -213,4 +264,23 @@ public class UserService implements IUserService {
         res.setCreatedAt(user.getCreatedAt());
         return res;
     }
+
+    public ResLoginDTO.UserLogin mapToUserLogin(User user) {
+        List<String> roles = user.getRoles().stream()
+                .map(r -> r.getName().name())
+                .collect(Collectors.toList());
+
+        List<String> permissions = user.getRoles().stream()
+                .flatMap(r -> r.getPermissions().stream())
+                .map(p -> p.getName())
+                .collect(Collectors.toList());
+
+        return new ResLoginDTO.UserLogin(
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                roles,
+                permissions);
+    }
+
 }

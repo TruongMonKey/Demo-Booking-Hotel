@@ -12,15 +12,46 @@ import {
 import './TopMenu.scss';
 
 const TopMenu = () => {
+  const items = [
+    {
+      key: '1',
+      icon: <HomeOutlined />,
+      label: <Link to="/discover">Lưu trú</Link>,
+    },
+    {
+      key: '2',
+      icon: <RocketOutlined />,
+      label: 'Chuyến bay',
+      disabled: true,
+    },
+    {
+      key: '3',
+      icon: <ShoppingOutlined />,
+      label: 'Chuyến bay + Khách sạn',
+      disabled: true,
+    },
+    {
+      key: '4',
+      icon: <CarOutlined />,
+      label: 'Thuê xe',
+      disabled: true,
+    },
+    {
+      key: '5',
+      icon: <AppstoreOutlined />,
+      label: 'Hoạt động',
+      disabled: true,
+    },
+    {
+      key: '6',
+      icon: <BarcodeOutlined />,
+      label: 'Taxi sân bay',
+      disabled: true,
+    },
+  ];
+
   return (
-    <Menu mode="horizontal" defaultSelectedKeys={['1']} className="top-menu" theme="dark">
-      <Menu.Item key="1" icon={<HomeOutlined />} ><Link to="/discover">Lưu trú</Link></Menu.Item>
-      <Menu.Item key="2" icon={<RocketOutlined />} disabled>Chuyến bay</Menu.Item>
-      <Menu.Item key="3" icon={<ShoppingOutlined />} disabled>Chuyến bay + Khách sạn</Menu.Item>
-      <Menu.Item key="4" icon={<CarOutlined />} disabled>Thuê xe</Menu.Item>
-      <Menu.Item key="5" icon={<AppstoreOutlined />} disabled>Hoạt động</Menu.Item>
-      <Menu.Item key="6" icon={<BarcodeOutlined />} disabled>Taxi sân bay</Menu.Item>
-    </Menu>
+    <Menu mode="horizontal" defaultSelectedKeys={['1']} className="top-menu" theme="dark" items={items} />
   );
 };
 

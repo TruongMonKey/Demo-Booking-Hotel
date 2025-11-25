@@ -92,7 +92,7 @@ function Notification() {
 
   return (
     <>
-      <Dropdown menu={{ items }} trigger={'click'} placement='bottomLeft' dropdownRender={(items) => (
+      <Dropdown menu={{ items }} trigger={'click'} placement='bottomLeft' popupRender={(menuNode) => (
         <>
           <div className='notify'>
             <div className='notify__header'>
@@ -105,7 +105,7 @@ function Notification() {
               </div>
             </div>
             <div className='notify__body'>
-              {items}
+              {menuNode}
             </div>
           </div>
         </>

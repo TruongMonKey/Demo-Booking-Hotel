@@ -4,8 +4,9 @@ function hasAdminRole() {
     const rolesStr = localStorage.getItem("roles");
     if(!rolesStr) return false;
     try {
+        // ✅ FIX: roles là array string, không phải array objects
         const roles = JSON.parse(rolesStr);
-        return Array.isArray(roles) && roles.some(r => r.name === "ROLE_ADMIN");
+        return Array.isArray(roles) && roles.includes("ROLE_ADMIN");
     } catch {
         return false;
     }

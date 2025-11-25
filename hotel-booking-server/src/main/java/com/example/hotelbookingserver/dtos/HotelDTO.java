@@ -24,7 +24,7 @@ public class HotelDTO {
     private String checkOutTime;
     private List<ImageDTO> images;
     private List<RoomTypeDTO> roomTypes;
-    private List<ReviewsDTO> reviews;
+    private List<ReviewDTO> reviews;
 
     private List<MultipartFile> imageFiles;
 

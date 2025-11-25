@@ -65,7 +65,8 @@ function EditRoom(props) {
 
         try {
             const hotelResponse = await getHotelByID(record.hotelId);
-            const hotelData = hotelResponse.hotelList[0] || hotelResponse;
+            // Normalize: handle both object and { data: object } response
+            const hotelData = typeof hotelResponse === 'object' && hotelResponse?.data ? hotelResponse.data : hotelResponse;
 
             const updatedRoomTypes = hotelData.roomTypes.map((room) =>
                 room.id === record.id ? updatedRoomData : room

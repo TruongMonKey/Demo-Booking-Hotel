@@ -9,15 +9,22 @@ import Notification from '../components/notification'
 const { Sider, Content } = Layout;
 
 function LayoutDefault() {
-  const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
+  // ✅ FIX: Parse roles từ localStorage
+  const rolesString = localStorage.getItem("roles");
+  const roles = rolesString ? JSON.parse(rolesString) : [];
+
   useEffect(() => {
-    if (role !== "ADMIN" && role !== "manager") {
+    // ✅ FIX: Kiểm tra từ array roles
+    const isAdmin = roles.includes("ROLE_ADMIN");
+    const isManager = roles.includes("ROLE_MANAGER");
+    
+    if (!isAdmin && !isManager) {
       alert("Bạn không có quyền truy cập");
       navigate("/");
     }
-  }, [role, navigate]);
+  }, [roles, navigate]);
 
   const [collapsed, setCollapsed] = useState(false);
   const items = [
@@ -40,7 +47,7 @@ function LayoutDefault() {
       label: <Link to="acc">Quản lý tài khoản</Link>,
       icon: <UserOutlined />,
       key: "account",
-      disabled: role !== "ADMIN"  
+      disabled: !roles.includes("ROLE_ADMIN")  // ✅ FIX
     }
   ]
 

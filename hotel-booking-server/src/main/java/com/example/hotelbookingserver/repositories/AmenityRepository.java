@@ -13,4 +13,6 @@ public interface AmenityRepository extends JpaRepository<Amenity, UUID> {
     List<Amenity> findByRoomType(RoomType roomType);
 
     void deleteByRoomType(RoomType roomType);
+
+    List<Amenity> findByRoomTypeId(UUID roomTypeId);
 }

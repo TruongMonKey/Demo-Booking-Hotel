@@ -42,6 +42,15 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Response<Void>> handleNotFound(ResourceNotFoundException ex) {
+        Response<Void> resp = new Response<>();
+        resp.setStatusCode(404);
+        resp.setMessage(ex.getMessage());
+        resp.setData(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response<Object>> handleAllException(Exception e) {
         Response<Object> response = new Response<>();

@@ -76,7 +76,9 @@ function Payment() {
             if (!hotelId) return;
             try {
                 const responseHotel = await getHotelByID(hotelId);
-                setHotel(responseHotel.hotelList[0]);
+                // Normalize: handle both object and { data: object } response
+                const hotel = typeof responseHotel === 'object' && responseHotel?.data ? responseHotel.data : responseHotel;
+                setHotel(hotel);
             } catch (error) {
                 setError('Lỗi khi lấy thông tin khách sạn.');
                 console.error('Lỗi API:', error);

@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
+//const { TabPane } = Tabs; // Use new Tabs items API instead of deprecated TabPane
 
 function CreateRoom() {
   const [formHotel] = Form.useForm();
@@ -81,8 +81,9 @@ function CreateRoom() {
     const fetchHotels = async () => {
       try {
         const response = await getHotels();
-        const hotelList = Array.isArray(response.hotelList) ? response.hotelList : response.hotelList.data || [];
-        
+        // HotelService now normalizes to return the data array when possible
+        const hotelList = Array.isArray(response) ? response : (response?.data || []);
+
         setHotels(hotelList.map((item) => ({ id: item.id, name: item.name })));
       } catch (error) {
         console.error('Lỗi khi tải danh sách khách sạn:', error);
@@ -229,179 +230,177 @@ function CreateRoom() {
   return (
     <>
       <h2>Quản lý khách sạn và phòng</h2>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Thêm khách sạn mới" key="1">
-          <Form onFinish={handleCreateHotel} layout="vertical" form={formHotel}>
-            <Row gutter={[20, 20]}>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Tên khách sạn" name="name" rules={rules}>
-                  <Input placeholder="Ví dụ: Ocean Breeze Hotel" />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item
-                  label="Hình ảnh đại diện"
-                  name="thumbnail"
-                  valuePropName="fileList"
-                  getValueFromEvent={handleNormFile}
-                  rules={[{ required: false }]}
-                >
-                  <Upload
-                    name="file"
-                    action="http://localhost:8081/images/upload"
-                    listType="picture"
-                    maxCount={1}
-                    onChange={handleThumbnailUpload}
-                  >
-                    <Button icon={<UploadOutlined />}>Tải lên hình ảnh</Button>
-                  </Upload>
-                  
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item label="Địa chỉ" name="address" rules={rules}>
-                  <Input placeholder="Ví dụ: 88 Đường Biển, Đà Nẵng, Việt Nam" />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item label="Link bản đồ" name="linkMap" rules={[{ required: false }, ...urlRule]}>
-                  <Input placeholder="Ví dụ: https://www.google.com/maps/..." />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item label="Mô tả" name="description" rules={[{ required: false }]}>
-                  <Input.TextArea
-                    showCount
-                    maxLength={2000}
-                    placeholder="Mô tả chi tiết về khách sạn"
-                    autoSize={{ minRows: 4, maxRows: 6 }}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
+      {/* Use items prop to avoid deprecated TabPane */}
+      <Tabs
+        defaultActiveKey="1"
+        items={[
+          {
+            key: '1',
+            label: 'Thêm khách sạn mới',
+            children: (
+              <Form onFinish={handleCreateHotel} layout="vertical" form={formHotel}>
                 <Row gutter={[20, 20]}>
-                  <Col span={24} xxl={8} xl={8} lg={8} md={24}>
-                    <Form.Item label="Đánh giá" name="rate" rules={rules}>
-                      <InputNumber min={0} max={5} step={0.1} placeholder="Ví dụ: 5.0" style={{ width: '100%' }} />
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Tên khách sạn" name="name" rules={rules}>
+                      <Input placeholder="Ví dụ: Ocean Breeze Hotel" />
                     </Form.Item>
                   </Col>
-                  <Col span={24} xxl={8} xl={8} lg={8} md={24}>
-                    <Form.Item label="Giờ check-in" name="checkInTime" rules={[{ required: false }]}>
-                      <TimePicker format="HH:mm" placeholder="Chọn giờ" style={{ width: '100%' }} />
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item
+                      label="Hình ảnh đại diện"
+                      name="thumbnail"
+                      valuePropName="fileList"
+                      getValueFromEvent={handleNormFile}
+                      rules={[{ required: false }]}
+                    >
+                      <Upload
+                        name="file"
+                        action="http://localhost:8081/images/upload"
+                        listType="picture"
+                        maxCount={1}
+                        onChange={handleThumbnailUpload}
+                      >
+                        <Button icon={<UploadOutlined />}>Tải lên hình ảnh</Button>
+                      </Upload>
+                      
                     </Form.Item>
                   </Col>
-                  <Col span={24} xxl={8} xl={8} lg={8} md={24}>
-                    <Form.Item label="Giờ check-out" name="checkOutTime" rules={[{ required: false }]}>
-                      <TimePicker format="HH:mm" placeholder="Chọn giờ" style={{ width: '100%' }} />
+                  <Col span={24}>
+                    <Form.Item label="Địa chỉ" name="address" rules={rules}>
+                      <Input placeholder="Ví dụ: 88 Đường Biển, Đà Nẵng, Việt Nam" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item label="Link bản đồ" name="linkMap" rules={[{ required: false }, ...urlRule]}>
+                      <Input placeholder="Ví dụ: https://www.google.com/maps/..." />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item label="Mô tả" name="description" rules={[{ required: false }]}>
+                      <Input.TextArea
+                        showCount
+                        maxLength={2000}
+                        placeholder="Mô tả chi tiết về khách sạn"
+                        autoSize={{ minRows: 4, maxRows: 6 }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Row gutter={[20, 20]}>
+                      <Col span={24} xxl={8} xl={8} lg={8} md={24}>
+                        <Form.Item label="Đánh giá" name="rate" rules={rules}>
+                          <InputNumber min={0} max={5} step={0.1} placeholder="Ví dụ: 5.0" style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                      <Col span={24} xxl={8} xl={8} lg={8} md={24}>
+                        <Form.Item label="Giờ check-in" name="checkInTime" rules={[{ required: false }]}>
+                          <TimePicker format="HH:mm" placeholder="Chọn giờ" style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                      <Col span={24} xxl={8} xl={8} lg={8} md={24}>
+                        <Form.Item label="Giờ check-out" name="checkOutTime" rules={[{ required: false }]}>
+                          <TimePicker format="HH:mm" placeholder="Chọn giờ" style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item label="Dịch vụ" name="service" rules={[{ required: false }]}>
+                      <Select mode="multiple" placeholder="Chọn dịch vụ" allowClear>
+                        {availableServices.map((service) => (
+                          <Option key={service} value={service}>
+                            {service}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit" loading={isLoadingHotel}>
+                        Tạo khách sạn
+                      </Button>
                     </Form.Item>
                   </Col>
                 </Row>
-              </Col>
-              <Col span={24}>
-                <Form.Item label="Dịch vụ" name="service" rules={[{ required: false }]}>
-                  <Select mode="multiple" placeholder="Chọn dịch vụ" allowClear>
-                    {availableServices.map((service) => (
-                      <Option key={service} value={service}>
-                        {service}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  label="Hình ảnh khách sạn"
-                  name="images"
-                  valuePropName="fileList"
-                  getValueFromEvent={handleNormFile}
-                  rules={[{ required: false }]}
-                >
-                  <div>
-                    <input type="file" multiple accept="image/*" onChange={handleFileChange} />
-                    <Button icon={<UploadOutlined />} onClick={handleUpload}>Tải ảnh lên</Button>
-                  </div>
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" loading={isLoadingHotel}>
-                    Tạo khách sạn
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </TabPane>
-        <TabPane tab="Thêm phòng mới" key="2">
-          <Form onFinish={handleCreateRoom} layout="vertical" form={formRoom}>
-            <Row gutter={[20, 20]}>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Khách sạn" name="hotelId" rules={rules}>
-                  <Select placeholder="Chọn khách sạn" onChange={(value) => setSelectedHotel(value)} allowClear>
-                    {hotels.map((hotel) => (
-                      <Option key={hotel.id} value={hotel.id}>
-                        {hotel.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Tên phòng" name="name" rules={rules}>
-                  <Input placeholder="Ví dụ: Phòng Ocean View" />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Số lượng giường" name="quantityBed" rules={rules}>
-                  <InputNumber min={1} placeholder="Ví dụ: 1" />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Số người tối đa" name="quantityPeople" rules={rules}>
-                  <InputNumber min={1} placeholder="Ví dụ: 2" />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Diện tích phòng (m²)" name="roomArea" rules={rules}>
-                  <InputNumber min={1} placeholder="Ví dụ: 45" />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item
-                  label="Giá (VND)"
-                  name="price"
-                  rules={[{ required: true, message: 'Vui lòng nhập giá!' }, { type: 'number', min: 0, message: 'Giá phải lớn hơn hoặc bằng 0!' }]}
-                >
-                  <InputNumber min={0} step={1000} placeholder="Ví dụ: 1450000" style={{ width: '100%' }} />
-                </Form.Item>
-              </Col>
-              <Col span={24} xxl={12} xl={12} lg={12} md={24}>
-                <Form.Item label="Số phòng khả dụng" name="availableRooms" rules={rules}>
-                  <InputNumber min={0} placeholder="Ví dụ: 5" />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item label="Tiện ích" name="amenities" rules={rules}>
-                  <Select mode="multiple" placeholder="Chọn tiện ích" allowClear>
-                    {availableAmenities.map((amenity) => (
-                      <Option key={amenity.id} value={amenity.id}>
-                        {amenity.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" loading={isLoadingRoom}>
-                    Tạo phòng
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </TabPane>
-      </Tabs>
+              </Form>
+            ),
+          },
+          {
+            key: '2',
+            label: 'Thêm phòng mới',
+            children: (
+              <Form onFinish={handleCreateRoom} layout="vertical" form={formRoom}>
+                <Row gutter={[20, 20]}>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Khách sạn" name="hotelId" rules={rules}>
+                      <Select placeholder="Chọn khách sạn" onChange={(value) => setSelectedHotel(value)} allowClear>
+                        {hotels.map((hotel) => (
+                          <Option key={hotel.id} value={hotel.id}>
+                            {hotel.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Tên phòng" name="name" rules={rules}>
+                      <Input placeholder="Ví dụ: Phòng Ocean View" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Số lượng giường" name="quantityBed" rules={rules}>
+                      <InputNumber min={1} placeholder="Ví dụ: 1" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Số người tối đa" name="quantityPeople" rules={rules}>
+                      <InputNumber min={1} placeholder="Ví dụ: 2" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Diện tích phòng (m²)" name="roomArea" rules={rules}>
+                      <InputNumber min={1} placeholder="Ví dụ: 45" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item
+                      label="Giá (VND)"
+                      name="price"
+                      rules={[{ required: true, message: 'Vui lòng nhập giá!' }, { type: 'number', min: 0, message: 'Giá phải lớn hơn hoặc bằng 0!' }]}
+                    >
+                      <InputNumber min={0} step={1000} placeholder="Ví dụ: 1450000" style={{ width: '100%' }} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} xxl={12} xl={12} lg={12} md={24}>
+                    <Form.Item label="Số phòng khả dụng" name="availableRooms" rules={rules}>
+                      <InputNumber min={0} placeholder="Ví dụ: 5" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item label="Tiện ích" name="amenities" rules={rules}>
+                      <Select mode="multiple" placeholder="Chọn tiện ích" allowClear>
+                        {availableAmenities.map((amenity) => (
+                          <Option key={amenity.id} value={amenity.id}>
+                            {amenity.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit" loading={isLoadingRoom}>
+                        Tạo phòng
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            ),
+          },
+        ]}
+      />
     </>
   );
 }

@@ -1,31 +1,93 @@
-import { post, get, del, patch, put } from "../utils/request"
+// src/Service/UserServices.js
+import { post, get, del, patch, put } from "../utils/request";
 
+/**
+ * Helper unwrap response.data (supports both axios-like and direct fetch-like returns)
+ */
+const unwrap = (resp) => {
+  if (!resp) return resp;
+  return resp?.data ?? resp;
+};
 
+const handleError = (err) => {
+  // Nếu axios error, try extract useful info
+  const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
+  const status = err?.response?.status;
+  const msg = serverMsg || err.message || "Unknown error";
+  const e = new Error(msg);
+  e.status = status;
+  throw e;
+};
+
+// ================= USER AUTH =================
 export const createUser = async (options) => {
-    return await post('auth/register',options);
-}
-
-export const delUserById = async (id) => {
-    return await del(`users/delete/${id}`);
-}
+  try {
+    const resp = await post("auth/register", options);
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};
 
 export const login = async (options) => {
-    return await post(`auth/login`, options);
-}
+  try {
+    const resp = await post("auth/login", options);
+    const data = unwrap(resp);
 
+    // normalize token field names to accessToken and user
+    const token = data?.accessToken ?? data?.access_token ?? data?.access_token;
+    // put token into the normalized object
+    return {
+      ...data,
+      accessToken: token,
+    };
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+// ================= USER CRUD =================
 export const getAllUser = async () => {
-    return await get(`users/all`);
-}
+  try {
+    const resp = await get("users/all");
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};
 
 export const getUserById = async (id) => {
-    return await get(`users/get-by-id/${id}`);
-}
+  try {
+    const resp = await get(`users/get-by-id/${id}`);
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};
 
-export const editRoom = async (id, options) => {
-    return await patch(`rooms/${id}`,options);
-}
-
+export const delUserById = async (id) => {
+  try {
+    const resp = await del(`users/delete/${id}`);
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};
 
 export const updateRole = async (id, options) => {
-    return await put(`users/update/${id}`,options);
-}
+  try {
+    const resp = await put(`users/update/${id}`, options);
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const editRoom = async (id, options) => {
+  try {
+    const resp = await put(`roomtypes/update/${id}`, options);
+    return unwrap(resp);
+  } catch (err) {
+    handleError(err);
+  }
+};

@@ -5,7 +5,7 @@ export const getStats = async () =>{
 }
 
 export const getBookings = async () =>{
-    return await get(`bookings/all`);
+    return await get(`api/bookings`);
 }
 
 export const getRooms = async () =>{
