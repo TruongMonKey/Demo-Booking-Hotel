@@ -3,8 +3,8 @@ package com.example.hotelbookingserver.services.impl;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
 
 public interface IAmenityService {
 

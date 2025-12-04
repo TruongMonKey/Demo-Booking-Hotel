@@ -9,8 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.hotelbookingserver.dtos.RoomTypeDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.RoomTypeResponseDTO;
 import com.example.hotelbookingserver.services.impl.IBookingService;
 import com.example.hotelbookingserver.services.impl.IRoomTypeService;
 
@@ -27,46 +27,48 @@ public class RoomController {
 
     // CREATE
     @PostMapping("/add")
-    public ResponseEntity<Response<RoomTypeDTO>> addNewRoom(@RequestBody RoomTypeDTO request) {
+    public ResponseEntity<Response<RoomTypeResponseDTO>> addNewRoom(@RequestBody RoomTypeResponseDTO request) {
         if (request.getName() == null || request.getName().isBlank() || request.getPrice() == null) {
-            Response<RoomTypeDTO> errorResponse = new Response<>();
+            Response<RoomTypeResponseDTO> errorResponse = new Response<>();
             errorResponse.setStatusCode(400);
             errorResponse.setMessage("Please provide values for all fields (name, price)");
             return ResponseEntity.badRequest().body(errorResponse);
         }
-        Response<RoomTypeDTO> response = roomService.addNewRoom(request);
+        Response<RoomTypeResponseDTO> response = roomService.addNewRoom(request);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     // READ
     @GetMapping("/all")
-    public ResponseEntity<Response<List<RoomTypeDTO>>> getAllRooms() {
-        Response<List<RoomTypeDTO>> response = roomService.getAllRoomTypes();
+    public ResponseEntity<Response<List<RoomTypeResponseDTO>>> getAllRooms() {
+        Response<List<RoomTypeResponseDTO>> response = roomService.getAllRoomTypes();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @GetMapping("/room-by-id/{roomId}")
-    public ResponseEntity<Response<RoomTypeDTO>> getRoomById(@PathVariable UUID roomId) {
-        Response<RoomTypeDTO> response = roomService.getRoomById(roomId);
+    public ResponseEntity<Response<RoomTypeResponseDTO>> getRoomById(@PathVariable UUID roomId) {
+        Response<RoomTypeResponseDTO> response = roomService.getRoomById(roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @GetMapping("/all-available-rooms")
-    public ResponseEntity<Response<List<RoomTypeDTO>>> getAvailableRooms(
+    public ResponseEntity<Response<List<RoomTypeResponseDTO>>> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate) {
 
-        Response<List<RoomTypeDTO>> response = roomService.getAllAvailableRoomsByDate(checkInDate, checkOutDate);
+        Response<List<RoomTypeResponseDTO>> response = roomService.getAllAvailableRoomsByDate(checkInDate,
+                checkOutDate);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @GetMapping("/available-rooms-by-date-and-type")
-    public ResponseEntity<Response<List<RoomTypeDTO>>> getAvailableRoomsByDateAndType(
+    public ResponseEntity<Response<List<RoomTypeResponseDTO>>> getAvailableRoomsByDateAndType(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
             @RequestParam String roomType) {
 
-        Response<List<RoomTypeDTO>> response = roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate,
+        Response<List<RoomTypeResponseDTO>> response = roomService.getAvailableRoomsByDataAndType(checkInDate,
+                checkOutDate,
                 roomType);
 
         return ResponseEntity.status(response.getStatusCode()).body(response);
@@ -74,11 +76,11 @@ public class RoomController {
 
     // UPDATE
     @PutMapping("/update/{roomId}")
-    public ResponseEntity<Response<RoomTypeDTO>> updateRoom(
+    public ResponseEntity<Response<RoomTypeResponseDTO>> updateRoom(
             @PathVariable UUID roomId,
-            @RequestBody RoomTypeDTO roomTypeDTO) {
+            @RequestBody RoomTypeResponseDTO roomTypeDTO) {
 
-        Response<RoomTypeDTO> response = roomService.updateRoom(roomTypeDTO, roomId);
+        Response<RoomTypeResponseDTO> response = roomService.updateRoom(roomTypeDTO, roomId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

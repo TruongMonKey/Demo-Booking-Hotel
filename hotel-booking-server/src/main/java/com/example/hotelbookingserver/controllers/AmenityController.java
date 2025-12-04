@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
 import com.example.hotelbookingserver.services.impl.IAmenityService;
 
 @RestController

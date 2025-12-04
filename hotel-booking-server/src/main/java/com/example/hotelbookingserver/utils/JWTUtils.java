@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.response.ResLoginDTO;
+import com.example.hotelbookingserver.dtos.responses.ResLoginDTO;
 
 @Service
 public class JWTUtils {

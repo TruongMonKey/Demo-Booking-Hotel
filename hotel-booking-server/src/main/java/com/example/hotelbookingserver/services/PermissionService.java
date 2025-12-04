@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.ResultPaginationDTO;
+import com.example.hotelbookingserver.dtos.PaginationResultDTO;
 import com.example.hotelbookingserver.entities.Permission;
 import com.example.hotelbookingserver.repositories.PermissionRepository;
 import com.example.hotelbookingserver.services.impl.IPermissionService;
@@ -70,11 +70,11 @@ public class PermissionService implements IPermissionService {
     }
 
     @Override
-    public ResultPaginationDTO getPermissions(Specification<Permission> spec, Pageable pageable) {
+    public PaginationResultDTO getPermissions(Specification<Permission> spec, Pageable pageable) {
         Page<Permission> pagePermissions = permissionRepository.findAll(spec, pageable);
 
-        ResultPaginationDTO rs = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+        PaginationResultDTO rs = new PaginationResultDTO();
+        PaginationResultDTO.Meta mt = new PaginationResultDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());

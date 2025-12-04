@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;

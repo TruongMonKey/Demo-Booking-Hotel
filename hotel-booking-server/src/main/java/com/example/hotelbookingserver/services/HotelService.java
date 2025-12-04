@@ -12,11 +12,11 @@ import com.example.hotelbookingserver.repositories.ReviewsRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.services.impl.IHotelService;
 import com.example.hotelbookingserver.utils.Utils;
-import com.example.hotelbookingserver.dtos.HotelDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
-import com.example.hotelbookingserver.dtos.ReviewDTO;
-import com.example.hotelbookingserver.dtos.RoomTypeDTO;
-import com.example.hotelbookingserver.dtos.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.HotelResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.ReviewResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.RoomTypeResponseDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,9 +46,6 @@ public class HotelService implements IHotelService {
         private ReviewsRepository reviewsRepository;
 
         @Autowired
-        private CloudinaryService cloudinaryService;
-
-        @Autowired
         private BookingRepository bookingRepository;
 
         @Autowired
@@ -58,10 +55,10 @@ public class HotelService implements IHotelService {
         private ReviewsRepository reviewRepository;
 
         @Override
-        public Response<List<HotelDTO>> getAllHotels() {
-                Response<List<HotelDTO>> response = new Response<>();
+        public Response<List<HotelResponseDTO>> getAllHotels() {
+                Response<List<HotelResponseDTO>> response = new Response<>();
                 try {
-                        List<HotelDTO> hotelDTOList = hotelRepository.getListHotels().stream()
+                        List<HotelResponseDTO> hotelDTOList = hotelRepository.getListHotels().stream()
                                         .map(Utils::mapHotelEntityToHotelDTO)
                                         .collect(Collectors.toList());
 
@@ -76,15 +73,15 @@ public class HotelService implements IHotelService {
         }
 
         @Override
-        public Response<HotelDTO> getHotelById(UUID id) {
-                Response<HotelDTO> response = new Response<>();
+        public Response<HotelResponseDTO> getHotelById(UUID id) {
+                Response<HotelResponseDTO> response = new Response<>();
                 try {
                         Hotel hotel = hotelRepository.findById(id).orElse(null);
                         if (hotel == null) {
                                 response.setStatusCode(404);
                                 response.setMessage("Hotel with ID not found: " + id);
                         } else {
-                                HotelDTO hotelDTO = Utils.mapHotelEntityToHotelDTO(hotel);
+                                HotelResponseDTO hotelDTO = Utils.mapHotelEntityToHotelDTO(hotel);
                                 response.setStatusCode(200);
                                 response.setMessage("Get hotel successfully");
                                 response.setData(hotelDTO);
@@ -98,28 +95,30 @@ public class HotelService implements IHotelService {
 
         @Override
         @Transactional
-        public Response<HotelDTO> addHotel(HotelDTO requestDTO) {
-                Response<HotelDTO> response = new Response<>();
+        public Response<HotelResponseDTO> addHotel(HotelResponseDTO requestDTO) {
+                Response<HotelResponseDTO> response = new Response<>();
                 try {
                         Hotel hotel = new Hotel();
                         hotel.setName(requestDTO.getName());
                         hotel.setAddress(requestDTO.getAddress());
                         hotel.setLinkMap(requestDTO.getLinkMap());
                         hotel.setDescription(requestDTO.getDescription());
-                        hotel.setRate(requestDTO.getRate());
+                        if (requestDTO.getRate() != null) {
+                                hotel.setRate(requestDTO.getRate().floatValue());
+                        }
                         hotel.setCheckInTime(requestDTO.getCheckInTime());
                         hotel.setCheckOutTime(requestDTO.getCheckOutTime());
 
-                        if (requestDTO.getThumbnail() != null && !requestDTO.getThumbnail().isEmpty()) {
-                                String thumbnailUrl = cloudinaryService.uploadToCloudinary(requestDTO.getThumbnail());
-                                hotel.setThumbnail(thumbnailUrl);
+                        // Use thumbnailUrl string directly if provided
+                        if (requestDTO.getThumbnailUrl() != null) {
+                                hotel.setThumbnail(requestDTO.getThumbnailUrl());
                         }
 
                         Hotel savedHotel = hotelRepository.save(hotel);
 
                         // Upload room types + amenities
                         if (requestDTO.getRoomTypes() != null) {
-                                for (RoomTypeDTO rtDTO : requestDTO.getRoomTypes()) {
+                                for (RoomTypeResponseDTO rtDTO : requestDTO.getRoomTypes()) {
                                         RoomType roomType = new RoomType();
                                         roomType.setName(rtDTO.getName());
                                         roomType.setQuantityBed(rtDTO.getQuantityBed());
@@ -144,7 +143,7 @@ public class HotelService implements IHotelService {
 
                         // Upload reviews
                         if (requestDTO.getReviews() != null) {
-                                for (ReviewDTO rDTO : requestDTO.getReviews()) {
+                                for (ReviewResponseDTO rDTO : requestDTO.getReviews()) {
                                         Reviews review = new Reviews();
                                         review.setRating(rDTO.getRating());
                                         review.setContent(rDTO.getContent());
@@ -167,8 +166,8 @@ public class HotelService implements IHotelService {
 
         @Override
         @Transactional
-        public Response<HotelDTO> updateHotel(UUID hotelId, HotelDTO requestDTO) {
-                Response<HotelDTO> response = new Response<>();
+        public Response<HotelResponseDTO> updateHotel(UUID hotelId, HotelResponseDTO requestDTO) {
+                Response<HotelResponseDTO> response = new Response<>();
                 try {
                         Hotel hotel = hotelRepository.findById(hotelId)
                                         .orElseThrow(() -> new RuntimeException("Hotel Not Found"));
@@ -182,14 +181,13 @@ public class HotelService implements IHotelService {
                         if (requestDTO.getLinkMap() != null)
                                 hotel.setLinkMap(requestDTO.getLinkMap());
                         if (requestDTO.getRate() != null)
-                                hotel.setRate(requestDTO.getRate());
+                                hotel.setRate(requestDTO.getRate().floatValue());
                         if (requestDTO.getCheckInTime() != null)
                                 hotel.setCheckInTime(requestDTO.getCheckInTime());
                         if (requestDTO.getCheckOutTime() != null)
                                 hotel.setCheckOutTime(requestDTO.getCheckOutTime());
-                        if (requestDTO.getThumbnail() != null && !requestDTO.getThumbnail().isEmpty()) {
-                                String thumbnailUrl = cloudinaryService.uploadToCloudinary(requestDTO.getThumbnail());
-                                hotel.setThumbnail(thumbnailUrl);
+                        if (requestDTO.getThumbnailUrl() != null) {
+                                hotel.setThumbnail(requestDTO.getThumbnailUrl());
                         }
 
                         Hotel updatedHotel = hotelRepository.save(hotel);

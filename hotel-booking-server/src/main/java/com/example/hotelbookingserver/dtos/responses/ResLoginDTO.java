@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.dtos.response;
+package com.example.hotelbookingserver.dtos.responses;
 
 import java.util.List;
 import java.util.UUID;

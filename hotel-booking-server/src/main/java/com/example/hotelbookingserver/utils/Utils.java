@@ -3,14 +3,16 @@ package com.example.hotelbookingserver.utils;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
-import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.BookingDTO;
-import com.example.hotelbookingserver.dtos.HotelDTO;
-import com.example.hotelbookingserver.dtos.ImageDTO;
-import com.example.hotelbookingserver.dtos.ReviewDTO;
-import com.example.hotelbookingserver.dtos.RoomTypeDTO;
-import com.example.hotelbookingserver.dtos.UserDTO;
+import com.example.hotelbookingserver.dtos.requests.BookingCreateRequest;
+import com.example.hotelbookingserver.dtos.responses.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.BookingResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.HotelResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.ImageDTO;
+import com.example.hotelbookingserver.dtos.responses.ReviewResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.RoomTypeResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.UserResponseDTO;
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.Booking;
 import com.example.hotelbookingserver.entities.Hotel;
@@ -19,17 +21,18 @@ import com.example.hotelbookingserver.entities.User;
 
 public class Utils {
 
-    public static UserDTO mapUserEntityToUserDTO(User user) {
+    public static UserResponseDTO mapUserEntityToUserDTO(User user) {
 
-        UserDTO userDTO = new UserDTO();
+        UserResponseDTO userDTO = new UserResponseDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setPhoneNumber(user.getPhone());
-        userDTO.setRoles(
-                user.getRoles().stream()
-                        .map(role -> role.getName().name())
-                        .collect(Collectors.toList()));
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAge(user.getAge());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setGender(user.getGender() != null ? user.getGender().name() : null);
+        // Note: roles mapping to RoleDTO list would require RoleDTO conversion
+        // For now, just map role names
         return userDTO;
     }
 
@@ -43,14 +46,14 @@ public class Utils {
      * @param includeRoom  true nếu muốn map nested RoomTypeDTO
      * @return BookingDTO đã map
      */
-    public static BookingDTO mapBookingToDTO(Booking booking,
+    public static BookingCreateRequest mapBookingToDTO(Booking booking,
             boolean includeUser,
             boolean includeHotel,
             boolean includeRoom) {
         if (booking == null)
             return null;
 
-        BookingDTO dto = new BookingDTO();
+        BookingCreateRequest dto = new BookingCreateRequest();
         dto.setId(booking.getId());
         dto.setCheckInDate(booking.getCheckInDate());
         dto.setCheckOutDate(booking.getCheckOutDate());
@@ -66,7 +69,7 @@ public class Utils {
 
         // Map nested UserDTO nếu includeUser = true
         if (includeUser && booking.getUser() != null) {
-            UserDTO userDTO = new UserDTO();
+            UserResponseDTO userDTO = new UserResponseDTO();
             userDTO.setId(booking.getUser().getId());
             userDTO.setName(booking.getUser().getName());
             userDTO.setEmail(booking.getUser().getEmail());
@@ -76,7 +79,7 @@ public class Utils {
 
         // Map nested HotelDTO nếu includeHotel = true
         if (includeHotel && booking.getHotel() != null) {
-            HotelDTO hotelDTO = new HotelDTO();
+            HotelResponseDTO hotelDTO = new HotelResponseDTO();
             hotelDTO.setId(booking.getHotel().getId());
             hotelDTO.setName(booking.getHotel().getName());
             hotelDTO.setLinkMap(booking.getHotel().getLinkMap());
@@ -86,7 +89,7 @@ public class Utils {
 
         // Map nested RoomTypeDTO nếu includeRoom = true
         if (includeRoom && booking.getRoomType() != null) {
-            RoomTypeDTO roomDTO = new RoomTypeDTO();
+            RoomTypeResponseDTO roomDTO = new RoomTypeResponseDTO();
             roomDTO.setId(booking.getRoomType().getId());
             roomDTO.setName(booking.getRoomType().getName());
             roomDTO.setQuantityBed(booking.getRoomType().getQuantityBed());
@@ -100,12 +103,12 @@ public class Utils {
         return dto;
     }
 
-    public static BookingDTO mapBookingToDTO(Booking booking) {
+    public static BookingCreateRequest mapBookingToDTO(Booking booking) {
         return mapBookingToDTO(booking, true, true, true);
     }
 
-    public static RoomTypeDTO mapRoomEntityToRoomDTO(RoomType roomType) {
-        RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+    public static RoomTypeResponseDTO mapRoomEntityToRoomDTO(RoomType roomType) {
+        RoomTypeResponseDTO roomTypeDTO = new RoomTypeResponseDTO();
 
         roomTypeDTO.setId(roomType.getId());
         roomTypeDTO.setHotelId(roomType.getHotel().getId());
@@ -119,11 +122,11 @@ public class Utils {
         return roomTypeDTO;
     }
 
-    public static BookingDTO mapBookingEntityToBookingDTOPlusBookedRooms(Booking booking, boolean mapUser) {
+    public static BookingCreateRequest mapBookingEntityToBookingDTOPlusBookedRooms(Booking booking, boolean mapUser) {
         if (booking == null)
             return null;
 
-        BookingDTO bookingDTO = new BookingDTO();
+        BookingCreateRequest bookingDTO = new BookingCreateRequest();
         bookingDTO.setId(booking.getId());
         bookingDTO.setCheckInDate(booking.getCheckInDate());
         bookingDTO.setCheckOutDate(booking.getCheckOutDate());
@@ -141,7 +144,7 @@ public class Utils {
         // Map roomType
         if (booking.getRoomType() != null) {
             RoomType room = booking.getRoomType();
-            RoomTypeDTO roomDTO = new RoomTypeDTO();
+            RoomTypeResponseDTO roomDTO = new RoomTypeResponseDTO();
             roomDTO.setId(room.getId());
             roomDTO.setName(room.getName());
             roomDTO.setQuantityBed(room.getQuantityBed());
@@ -167,7 +170,7 @@ public class Utils {
 
             // Map hotel
             if (room.getHotel() != null) {
-                HotelDTO hotelDTO = new HotelDTO();
+                HotelResponseDTO hotelDTO = new HotelResponseDTO();
                 hotelDTO.setId(room.getHotel().getId());
                 hotelDTO.setName(room.getHotel().getName());
                 hotelDTO.setLinkMap(room.getHotel().getLinkMap());
@@ -178,32 +181,25 @@ public class Utils {
         return bookingDTO;
     }
 
-    public static UserDTO mapUserEntityToUserDTOPlusUserBookingsAndRoom(User user) {
-        UserDTO userDTO = new UserDTO();
+    public static UserResponseDTO mapUserEntityToUserDTOPlusUserBookingsAndRoom(User user) {
+        UserResponseDTO userDTO = new UserResponseDTO();
 
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setPhoneNumber(user.getPhone());
-        userDTO.setRoles(
-                user.getRoles().stream()
-                        .map(role -> role.getName().name())
-                        .collect(Collectors.toList()));
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAge(user.getAge());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setGender(user.getGender() != null ? user.getGender().name() : null);
 
-        if (user.getBookings() != null && !user.getBookings().isEmpty()) {
-            userDTO.setBookings(
-                    user.getBookings().stream()
-                            .map((Booking booking) -> mapBookingEntityToBookingDTOPlusBookedRooms(booking, false))
-                            .collect(Collectors.toList()));
-        }
         return userDTO;
     }
 
-    public static List<RoomTypeDTO> mapRoomListEntityToRoomListDTO(List<RoomType> roomList) {
+    public static List<RoomTypeResponseDTO> mapRoomListEntityToRoomListDTO(List<RoomType> roomList) {
         return roomList.stream().map(Utils::mapRoomEntityToRoomDTO).collect(Collectors.toList());
     }
 
-    public static List<BookingDTO> mapBookingListEntityToBookingListDTO(
+    public static List<BookingCreateRequest> mapBookingListEntityToBookingListDTO(
             List<Booking> bookingList,
             boolean includeUser,
             boolean includeHotel,
@@ -216,8 +212,8 @@ public class Utils {
                 .collect(Collectors.toList());
     }
 
-    public static RoomTypeDTO mapRoomEntityToRoomDTOPlusBookings(RoomType room) {
-        RoomTypeDTO roomDTO = new RoomTypeDTO();
+    public static RoomTypeResponseDTO mapRoomEntityToRoomDTOPlusBookings(RoomType room) {
+        RoomTypeResponseDTO roomDTO = new RoomTypeResponseDTO();
 
         roomDTO.setId(room.getId());
         roomDTO.setName(room.getName());
@@ -230,10 +226,27 @@ public class Utils {
             roomDTO.setHotelId(room.getHotel().getId());
         }
 
+        // Map bookings as BookingResponseDTO (minimal, without nested objects to avoid
+        // circular refs)
         if (room.getBookings() != null) {
             roomDTO.setBookings(
                     room.getBookings().stream()
-                            .map(b -> Utils.mapBookingToDTO(b, true, true, true))
+                            .map(b -> {
+                                BookingResponseDTO dto = new BookingResponseDTO();
+                                dto.setId(b.getId());
+                                dto.setCheckInDate(b.getCheckInDate());
+                                dto.setCheckOutDate(b.getCheckOutDate());
+                                dto.setNumberOfRooms(b.getNumberOfRooms());
+                                dto.setNumberOfGuests(b.getNumberOfGuests());
+                                dto.setTotalPrice(b.getTotalPrice());
+                                dto.setStatus(b.getStatus() != null ? b.getStatus().name() : null);
+                                dto.setPaymentStatus(b.getPaymentStatus());
+                                dto.setPaymentMethod(b.getPaymentMethod());
+                                dto.setCancelReason(b.getCancelReason());
+                                dto.setCreatedAt(b.getCreatedAt());
+                                dto.setUpdatedAt(b.getUpdatedAt());
+                                return dto;
+                            })
                             .collect(Collectors.toList()));
         }
         if (room.getAmenities() != null && !room.getAmenities().isEmpty()) {
@@ -251,8 +264,8 @@ public class Utils {
         return roomDTO;
     }
 
-    public static HotelDTO mapHotelEntityToHotelDTO(Hotel hotel) {
-        HotelDTO hotelDTO = new HotelDTO();
+    public static HotelResponseDTO mapHotelEntityToHotelDTO(Hotel hotel) {
+        HotelResponseDTO hotelDTO = new HotelResponseDTO();
 
         // images
         List<ImageDTO> images = hotel.getImages() != null
@@ -262,50 +275,46 @@ public class Utils {
                 : Collections.emptyList();
 
         // reviews
-        List<ReviewDTO> reviews = hotel.getReviews() != null
+        List<ReviewResponseDTO> reviews = hotel.getReviews() != null
                 ? hotel.getReviews().stream()
-                        .map(review -> new ReviewDTO(review.getId(), review.getRating(), review.getContent()))
+                        .map(review -> new ReviewResponseDTO(review.getId(), review.getRating(), review.getContent()))
                         .collect(Collectors.toList())
                 : Collections.emptyList();
 
         // roomTypes
-        List<RoomTypeDTO> roomTypes = hotel.getRoomTypes() != null
+        List<RoomTypeResponseDTO> roomTypes = hotel.getRoomTypes() != null
                 ? hotel.getRoomTypes().stream()
                         .map(roomType -> {
-                            List<AmenityDTO> amenities = roomType.getAmenities() != null
-                                    ? roomType.getAmenities().stream()
-                                            .map(amenity -> new AmenityDTO(
-                                                    amenity.getId(),
-                                                    amenity.getName(),
-                                                    roomType.getId()))
-                                            .collect(Collectors.toList())
-                                    : Collections.emptyList();
+                            RoomTypeResponseDTO rtDTO = new RoomTypeResponseDTO();
+                            rtDTO.setId(roomType.getId());
+                            rtDTO.setHotelId(hotel.getId());
+                            rtDTO.setName(roomType.getName());
+                            rtDTO.setQuantityBed(roomType.getQuantityBed());
+                            rtDTO.setQuantityPeople(roomType.getQuantityPeople());
+                            rtDTO.setRoomArea(roomType.getRoomArea());
+                            rtDTO.setQuantityRoom(roomType.getQuantityRoom());
+                            rtDTO.setPrice(roomType.getPrice());
 
-                            List<BookingDTO> bookings = roomType.getBookings() != null
-                                    ? roomType.getBookings().stream()
-                                            .map(b -> Utils.mapBookingToDTO(b, true, true, true)) // map tất cả nested
-                                                                                                  // DTO
-                                            .collect(Collectors.toList())
-                                    : Collections.emptyList();
+                            if (roomType.getAmenities() != null) {
+                                rtDTO.setAmenities(
+                                        roomType.getAmenities().stream()
+                                                .map(amenity -> {
+                                                    AmenityDTO dto = new AmenityDTO();
+                                                    dto.setId(amenity.getId());
+                                                    dto.setName(amenity.getName());
+                                                    return dto;
+                                                })
+                                                .collect(Collectors.toList()));
+                            }
 
-                            List<String> imageFiles = roomType.getImages() != null
-                                    ? roomType.getImages().stream()
-                                            .map(img -> img.getImageUrl())
-                                            .collect(Collectors.toList())
-                                    : Collections.emptyList();
+                            if (roomType.getImages() != null) {
+                                rtDTO.setImageFiles(
+                                        roomType.getImages().stream()
+                                                .map(img -> img.getImageUrl())
+                                                .collect(Collectors.toList()));
+                            }
 
-                            return new RoomTypeDTO(
-                                    roomType.getId(),
-                                    hotel.getId(),
-                                    roomType.getName(),
-                                    roomType.getQuantityBed(),
-                                    roomType.getQuantityPeople(),
-                                    roomType.getRoomArea(),
-                                    roomType.getQuantityRoom(),
-                                    roomType.getPrice(),
-                                    amenities,
-                                    bookings,
-                                    imageFiles);
+                            return rtDTO;
                         })
                         .collect(Collectors.toList())
                 : Collections.emptyList();
@@ -315,7 +324,7 @@ public class Utils {
         hotelDTO.setAddress(hotel.getAddress());
         hotelDTO.setLinkMap(hotel.getLinkMap());
         hotelDTO.setDescription(hotel.getDescription());
-        hotelDTO.setRate(hotel.getRate());
+        hotelDTO.setRate(hotel.getRate() != null ? BigDecimal.valueOf(hotel.getRate()) : null);
         hotelDTO.setCheckInTime(hotel.getCheckInTime());
         hotelDTO.setCheckOutTime(hotel.getCheckOutTime());
         hotelDTO.setImages(images);
@@ -325,7 +334,7 @@ public class Utils {
         return hotelDTO;
     }
 
-    public static List<UserDTO> mapUserListEntityToUserListDTO(List<User> userList) {
+    public static List<UserResponseDTO> mapUserListEntityToUserListDTO(List<User> userList) {
         return userList.stream().map(Utils::mapUserEntityToUserDTO).collect(Collectors.toList());
     }
 

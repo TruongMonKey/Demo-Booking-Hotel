@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.dtos;
+package com.example.hotelbookingserver.dtos.responses;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewDTO {
+public class ReviewResponseDTO {
     private UUID id;
     private int rating;
     private String content;
@@ -21,7 +21,7 @@ public class ReviewDTO {
     private Instant createdAt;
     private Instant updatedAt;
 
-    public ReviewDTO(UUID id, int rating, String content) {
+    public ReviewResponseDTO(UUID id, int rating, String content) {
         this.id = id;
         this.rating = rating;
         this.content = content;

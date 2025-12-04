@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.example.hotelbookingserver.dtos.ResultPaginationDTO;
+import com.example.hotelbookingserver.dtos.PaginationResultDTO;
 import com.example.hotelbookingserver.entities.Permission;
 
 public interface IPermissionService {
@@ -21,5 +21,5 @@ public interface IPermissionService {
 
     void delete(UUID id);
 
-    ResultPaginationDTO getPermissions(Specification<Permission> spec, Pageable pageable);
+    PaginationResultDTO getPermissions(Specification<Permission> spec, Pageable pageable);
 }

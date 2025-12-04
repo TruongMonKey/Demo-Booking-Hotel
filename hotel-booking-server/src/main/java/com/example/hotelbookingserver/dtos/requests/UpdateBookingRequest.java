@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.dtos.request;
+package com.example.hotelbookingserver.dtos.requests;
 
 import jakarta.validation.constraints.Min;
 import lombok.Getter;

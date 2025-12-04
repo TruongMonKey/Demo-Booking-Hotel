@@ -49,7 +49,7 @@ export const login = async (options) => {
 // ================= USER CRUD =================
 export const getAllUser = async () => {
   try {
-    const resp = await get("users/all");
+    const resp = await get("api/v1/users");
     return unwrap(resp);
   } catch (err) {
     handleError(err);
@@ -58,7 +58,7 @@ export const getAllUser = async () => {
 
 export const getUserById = async (id) => {
   try {
-    const resp = await get(`users/get-by-id/${id}`);
+    const resp = await get(`api/v1/users/${id}`);
     return unwrap(resp);
   } catch (err) {
     handleError(err);
@@ -67,7 +67,7 @@ export const getUserById = async (id) => {
 
 export const delUserById = async (id) => {
   try {
-    const resp = await del(`users/delete/${id}`);
+    const resp = await del(`api/v1/users/${id}`);
     return unwrap(resp);
   } catch (err) {
     handleError(err);
@@ -76,7 +76,7 @@ export const delUserById = async (id) => {
 
 export const updateRole = async (id, options) => {
   try {
-    const resp = await put(`users/update/${id}`, options);
+    const resp = await put(`api/v1/users/${id}`, options);
     return unwrap(resp);
   } catch (err) {
     handleError(err);

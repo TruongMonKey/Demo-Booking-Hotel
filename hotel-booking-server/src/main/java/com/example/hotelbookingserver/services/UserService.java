@@ -10,11 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.response.Response;
-import com.example.hotelbookingserver.dtos.BookingDTO;
-import com.example.hotelbookingserver.dtos.UserDTO;
-import com.example.hotelbookingserver.dtos.response.ResCreateUserDTO;
-import com.example.hotelbookingserver.dtos.response.ResLoginDTO;
+import com.example.hotelbookingserver.dtos.requests.BookingCreateRequest;
+import com.example.hotelbookingserver.dtos.requests.UserCreateRequest;
+import com.example.hotelbookingserver.dtos.responses.ResLoginDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.UserResponseDTO;
 import com.example.hotelbookingserver.entities.Role;
 import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.entities.constants.ERole;
@@ -41,10 +41,10 @@ public class UserService implements IUserService {
     // ==========================================================
 
     @Override
-    public Response<List<UserDTO>> getAllUsers() {
-        Response<List<UserDTO>> response = new Response<>();
+    public Response<List<UserResponseDTO>> getAllUsers() {
+        Response<List<UserResponseDTO>> response = new Response<>();
         try {
-            List<UserDTO> data = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+            List<UserResponseDTO> data = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
                     .stream()
                     .map(Utils::mapUserEntityToUserDTOPlusUserBookingsAndRoom)
                     .collect(Collectors.toList());
@@ -64,13 +64,14 @@ public class UserService implements IUserService {
     // ==========================================================
 
     @Override
-    public Response<List<BookingDTO>> getUserBookingHistory(UUID userId) {
-        Response<List<BookingDTO>> response = new Response<>();
+    public Response<List<BookingCreateRequest>> getUserBookingHistory(UUID userId) {
+        Response<List<BookingCreateRequest>> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User not found"));
 
-            List<BookingDTO> bookings = Utils.mapBookingListEntityToBookingListDTO(user.getBookings(), true, true,
+            List<BookingCreateRequest> bookings = Utils.mapBookingListEntityToBookingListDTO(user.getBookings(), true,
+                    true,
                     true);
 
             response.setStatusCode(200);
@@ -120,13 +121,13 @@ public class UserService implements IUserService {
     // ==========================================================
 
     @Override
-    public Response<UserDTO> getUserById(UUID userId) {
-        Response<UserDTO> response = new Response<>();
+    public Response<UserResponseDTO> getUserById(UUID userId) {
+        Response<UserResponseDTO> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User Not Found"));
 
-            UserDTO dto = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            UserResponseDTO dto = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
 
             response.setStatusCode(200);
             response.setMessage("successful");
@@ -147,30 +148,34 @@ public class UserService implements IUserService {
     // ==========================================================
 
     @Override
-    public Response<UserDTO> updateUserById(UUID userId, UserDTO dto) {
-        Response<UserDTO> response = new Response<>();
+    public Response<UserResponseDTO> updateUserById(UUID userId, UserResponseDTO dto) {
+        Response<UserResponseDTO> response = new Response<>();
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new OurException("User Not Found"));
 
-            // Update roles
-            Set<Role> roles = dto.getRoles().stream()
-                    .map(roleStr -> roleRepository.findByName(ERole.valueOf(roleStr))
-                            .orElseThrow(() -> new OurException("Role not found: " + roleStr)))
-                    .collect(Collectors.toSet());
+            // Update basic fields if provided
+            if (dto.getName() != null) {
+                user.setName(dto.getName());
+            }
+            if (dto.getEmail() != null) {
+                user.setEmail(dto.getEmail());
+            }
+            if (dto.getAge() != null) {
+                user.setAge(dto.getAge());
+            }
 
-            user.setRoles(roles);
             userRepository.save(user);
 
-            UserDTO updated = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
+            UserResponseDTO updated = Utils.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
 
             response.setStatusCode(200);
             response.setMessage("Update successful");
             response.setData(updated);
 
-        } catch (IllegalArgumentException e) {
+        } catch (OurException e) {
             response.setStatusCode(400);
-            response.setMessage("Invalid role: " + e.getMessage());
+            response.setMessage("Error: " + e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Update failed: " + e.getMessage());
@@ -184,13 +189,13 @@ public class UserService implements IUserService {
     // ==========================================================
 
     @Override
-    public Response<UserDTO> getMyInfo(String email) {
-        Response<UserDTO> response = new Response<>();
+    public Response<UserResponseDTO> getMyInfo(String email) {
+        Response<UserResponseDTO> response = new Response<>();
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new OurException("User Not Found"));
 
-            UserDTO dto = Utils.mapUserEntityToUserDTO(user);
+            UserResponseDTO dto = Utils.mapUserEntityToUserDTO(user);
 
             response.setStatusCode(200);
             response.setMessage("successful");
@@ -253,16 +258,57 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
-    public ResCreateUserDTO convertCreateUserDTO(User user) {
-        ResCreateUserDTO res = new ResCreateUserDTO();
-        res.setId(user.getId());
+    public UserCreateRequest convertCreateUserDTO(User user) {
+        UserCreateRequest res = new UserCreateRequest();
         res.setEmail(user.getEmail());
         res.setName(user.getName());
+        res.setPassword(user.getPassword()); // Not recommended in production
         res.setAge(user.getAge());
-        res.setGender(user.getGender());
-        res.setAddress(user.getAddress());
-        res.setCreatedAt(user.getCreatedAt());
         return res;
+    }
+
+    @Override
+    public Response<UserResponseDTO> createUser(UserCreateRequest dto) {
+        Response<UserResponseDTO> response = new Response<>();
+        try {
+            // Check if user already exists
+            if (isEmailExist(dto.getEmail())) {
+                response.setStatusCode(400);
+                response.setMessage("Email already exists");
+                return response;
+            }
+
+            // Create new user
+            User user = new User();
+            user.setEmail(dto.getEmail());
+            user.setName(dto.getName());
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            if (dto.getAge() != null) {
+                user.setAge(dto.getAge());
+            }
+
+            // Set default role as ROLE_CUSTOMER
+            Role customerRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
+                    .orElseThrow(() -> new OurException("Default role not found"));
+            user.setRoles(Set.of(customerRole));
+
+            User savedUser = userRepository.save(user);
+
+            UserResponseDTO created = Utils.mapUserEntityToUserDTO(savedUser);
+
+            response.setStatusCode(201);
+            response.setMessage("User created successfully");
+            response.setData(created);
+
+        } catch (OurException e) {
+            response.setStatusCode(400);
+            response.setMessage("Error: " + e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error creating user: " + e.getMessage());
+        }
+
+        return response;
     }
 
     public ResLoginDTO.UserLogin mapToUserLogin(User user) {

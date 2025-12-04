@@ -1,8 +1,8 @@
 package com.example.hotelbookingserver.controllers;
 
 import com.example.hotelbookingserver.services.HotelService;
-import com.example.hotelbookingserver.dtos.HotelDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.HotelResponseDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,35 +25,35 @@ public class HotelController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Response<List<HotelDTO>>> getAllHotels() {
-        Response<List<HotelDTO>> response = hotelService.getAllHotels();
+    public ResponseEntity<Response<List<HotelResponseDTO>>> getAllHotels() {
+        Response<List<HotelResponseDTO>> response = hotelService.getAllHotels();
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response);
     }
 
     @GetMapping("/hotel-by-id/{id}")
-    public ResponseEntity<Response<HotelDTO>> getHotelById(@PathVariable UUID id) {
-        Response<HotelDTO> response = hotelService.getHotelById(id);
+    public ResponseEntity<Response<HotelResponseDTO>> getHotelById(@PathVariable UUID id) {
+        Response<HotelResponseDTO> response = hotelService.getHotelById(id);
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response);
     }
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response<HotelDTO>> addHotel(@ModelAttribute HotelDTO requestDTO) {
-        Response<HotelDTO> response = hotelService.addHotel(requestDTO);
+    public ResponseEntity<Response<HotelResponseDTO>> addHotel(@ModelAttribute HotelResponseDTO requestDTO) {
+        Response<HotelResponseDTO> response = hotelService.addHotel(requestDTO);
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response);
     }
 
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response<HotelDTO>> updateHotel(
+    public ResponseEntity<Response<HotelResponseDTO>> updateHotel(
             @PathVariable UUID id,
-            @ModelAttribute HotelDTO requestDTO) {
+            @ModelAttribute HotelResponseDTO requestDTO) {
         requestDTO.setId(id);
-        Response<HotelDTO> response = hotelService.updateHotel(id, requestDTO);
+        Response<HotelResponseDTO> response = hotelService.updateHotel(id, requestDTO);
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response);

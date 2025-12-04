@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.dtos.response;
+package com.example.hotelbookingserver.dtos.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResCreateUserDTO {
+public class UserCreateRequest {
 
     @Email
     @NotBlank(message = "Email is required")

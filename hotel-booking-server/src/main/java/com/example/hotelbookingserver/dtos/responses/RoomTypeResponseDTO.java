@@ -1,4 +1,4 @@
-package com.example.hotelbookingserver.dtos;
+package com.example.hotelbookingserver.dtos.responses;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoomTypeDTO {
+public class RoomTypeResponseDTO {
     private UUID id;
     private UUID hotelId;
     private String name;
@@ -26,6 +26,6 @@ public class RoomTypeDTO {
     private Integer quantityRoom;
     private BigDecimal price;
     private List<AmenityDTO> amenities;
-    private List<BookingDTO> bookings;
+    private List<BookingResponseDTO> bookings;
     private List<String> imageFiles;
 }

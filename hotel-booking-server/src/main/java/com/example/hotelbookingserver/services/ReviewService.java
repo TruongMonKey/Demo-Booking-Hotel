@@ -2,10 +2,10 @@ package com.example.hotelbookingserver.services;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.ReviewDTO;
-import com.example.hotelbookingserver.dtos.request.CreateReviewRequest;
-import com.example.hotelbookingserver.dtos.request.UpdateReviewRequest;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.requests.ReviewCreateRequest;
+import com.example.hotelbookingserver.dtos.requests.ReviewUpdateRequest;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.ReviewResponseDTO;
 import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.Reviews;
 import com.example.hotelbookingserver.entities.User;
@@ -40,8 +40,8 @@ public class ReviewService implements IReviewService {
     @Autowired
     private UserRepository userRepository;
 
-    private final Function<Reviews, ReviewDTO> toDto = r -> {
-        ReviewDTO dto = new ReviewDTO();
+    private final Function<Reviews, ReviewResponseDTO> toDto = r -> {
+        ReviewResponseDTO dto = new ReviewResponseDTO();
         dto.setId(r.getId());
         dto.setRating(r.getRating());
         dto.setContent(r.getContent());
@@ -54,8 +54,8 @@ public class ReviewService implements IReviewService {
 
     @Override
     @Transactional
-    public Response<ReviewDTO> createReview(CreateReviewRequest request) {
-        Response<ReviewDTO> resp = new Response<>();
+    public Response<ReviewResponseDTO> createReview(ReviewCreateRequest request) {
+        Response<ReviewResponseDTO> resp = new Response<>();
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id: " + request.getHotelId()));
         User user = userRepository.findById(request.getUserId())
@@ -78,8 +78,8 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Response<ReviewDTO> getReviewById(UUID id) {
-        Response<ReviewDTO> resp = new Response<>();
+    public Response<ReviewResponseDTO> getReviewById(UUID id) {
+        Response<ReviewResponseDTO> resp = new Response<>();
         Reviews r = reviewsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found with id: " + id));
         resp.setStatusCode(200);
@@ -89,14 +89,14 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Response<Page<ReviewDTO>> getReviewsByHotel(UUID hotelId, Pageable pageable) {
-        Response<Page<ReviewDTO>> resp = new Response<>();
+    public Response<Page<ReviewResponseDTO>> getReviewsByHotel(UUID hotelId, Pageable pageable) {
+        Response<Page<ReviewResponseDTO>> resp = new Response<>();
         // check hotel exists (optional)
         if (!hotelRepository.existsById(hotelId)) {
             throw new ResourceNotFoundException("Hotel not found with id: " + hotelId);
         }
         Page<Reviews> page = reviewsRepository.findByHotelId(hotelId, pageable);
-        Page<ReviewDTO> dtoPage = page.map(toDto);
+        Page<ReviewResponseDTO> dtoPage = page.map(toDto);
         resp.setStatusCode(200);
         resp.setMessage("Get reviews by hotel successfully");
         resp.setData(dtoPage);
@@ -105,8 +105,8 @@ public class ReviewService implements IReviewService {
 
     @Override
     @Transactional
-    public Response<ReviewDTO> updateReview(UUID id, UpdateReviewRequest request) {
-        Response<ReviewDTO> resp = new Response<>();
+    public Response<ReviewResponseDTO> updateReview(UUID id, ReviewUpdateRequest request) {
+        Response<ReviewResponseDTO> resp = new Response<>();
         Reviews existing = reviewsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found with id: " + id));
 

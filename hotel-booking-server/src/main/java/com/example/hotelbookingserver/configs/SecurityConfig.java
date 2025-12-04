@@ -49,14 +49,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
-                                "/api/auth/**",
-                                "/rooms/**",
-                                "/api/bookings/**",
                                 "/hotels/**",
-                                "/users/**",
-                                "/amenities/**",
-                                "/images/**")
+                                "/roomtypes/**",
+                                "/reviews/**",
+                                "/images/**",
+                                "/api/roles/**")
                         .permitAll()
+                        .requestMatchers(
+                                "/api/v1/users/**",
+                                "/api/bookings/**",
+                                "/api/amenities/**",
+                                "/api/permissions/**")
+                        .authenticated()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))

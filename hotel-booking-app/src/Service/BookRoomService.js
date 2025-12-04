@@ -1,5 +1,10 @@
 import { post } from '../utils/request'
 
-export const bookRoom =async (roomid, userid, options)=> {
-    return await post(`bookings/book-room/${roomid}/${userid}`,options);
+/**
+ * Book a room for a user
+ * @param {Object} options - Booking details (checkInDate, checkOutDate, numberOfRooms, etc.)
+ * @returns {Promise} Response from booking API
+ */
+export const bookRoom = async (options) => {
+    return await post(`api/bookings`, options);
 }

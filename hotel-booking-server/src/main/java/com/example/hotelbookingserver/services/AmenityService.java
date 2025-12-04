@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.AmenityDTO;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.responses.AmenityDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.RoomType;
 import com.example.hotelbookingserver.exception.OurException;

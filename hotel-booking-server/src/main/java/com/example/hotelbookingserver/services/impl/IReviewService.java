@@ -5,19 +5,19 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.example.hotelbookingserver.dtos.ReviewDTO;
-import com.example.hotelbookingserver.dtos.request.CreateReviewRequest;
-import com.example.hotelbookingserver.dtos.request.UpdateReviewRequest;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.requests.ReviewCreateRequest;
+import com.example.hotelbookingserver.dtos.requests.ReviewUpdateRequest;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.ReviewResponseDTO;
 
 public interface IReviewService {
-    Response<ReviewDTO> createReview(CreateReviewRequest request);
+    Response<ReviewResponseDTO> createReview(ReviewCreateRequest request);
 
-    Response<ReviewDTO> getReviewById(UUID id);
+    Response<ReviewResponseDTO> getReviewById(UUID id);
 
-    Response<Page<ReviewDTO>> getReviewsByHotel(UUID hotelId, Pageable pageable);
+    Response<Page<ReviewResponseDTO>> getReviewsByHotel(UUID hotelId, Pageable pageable);
 
-    Response<ReviewDTO> updateReview(UUID id, UpdateReviewRequest request);
+    Response<ReviewResponseDTO> updateReview(UUID id, ReviewUpdateRequest request);
 
     Response<Void> deleteReview(UUID id);
 }

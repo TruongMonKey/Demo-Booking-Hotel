@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hotelbookingserver.dtos.request.ReqLoginDTO;
-import com.example.hotelbookingserver.dtos.response.ResCreateUserDTO;
-import com.example.hotelbookingserver.dtos.response.ResLoginDTO;
+import com.example.hotelbookingserver.dtos.requests.ReqLoginDTO;
+import com.example.hotelbookingserver.dtos.requests.UserCreateRequest;
+import com.example.hotelbookingserver.dtos.responses.ResLoginDTO;
 import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.exception.IdInvalidException;
 import com.example.hotelbookingserver.services.UserService;
@@ -150,7 +150,7 @@ public class AuthController {
 
     // ===================== REGISTER =====================
     @PostMapping("/register")
-    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User postUser) throws IdInvalidException {
+    public ResponseEntity<UserCreateRequest> register(@Valid @RequestBody User postUser) throws IdInvalidException {
         if (userService.isEmailExist(postUser.getEmail()))
             throw new IdInvalidException("Email " + postUser.getEmail() + " đã tồn tại");
 

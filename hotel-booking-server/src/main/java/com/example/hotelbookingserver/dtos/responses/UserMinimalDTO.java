@@ -1,4 +1,6 @@
-package com.example.hotelbookingserver.dtos;
+package com.example.hotelbookingserver.dtos.responses;
+
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDTO {
-    private Long id;
+public class UserMinimalDTO {
+    private UUID id;
+    private String email;
     private String name;
 }

@@ -126,7 +126,7 @@ function refreshToken() {
       }
 
       const body = await resp.json().catch(() => null);
-      const newAccess = body?.accessToken ?? body?.access_token ?? body?.access_token;
+      const newAccess = body?.accessToken ?? body?.access_token;
       if (!newAccess) {
         throw new Error("Refresh endpoint did not return access token");
       }
@@ -140,25 +140,11 @@ function refreshToken() {
       console.debug("[refreshToken] refresh succeeded, new token saved");
       return newAccess;
     } finally {
-      // reset flags after the promise settles (do it here to ensure state reset)
-      // But do not clear refreshPromise yet; keep until callers read it (we set to null below via .finally)
+      // reset flags after the promise settles
+      isRefreshing = false;
+      refreshPromise = null;
     }
   })();
-
-  // ensure we clear the flags when promise settles
-  refreshPromise = refreshPromise
-    .then((tok) => {
-      isRefreshing = false;
-      const p = refreshPromise;
-      refreshPromise = null;
-      return tok;
-    })
-    .catch((err) => {
-      isRefreshing = false;
-      const p = refreshPromise;
-      refreshPromise = null;
-      throw err;
-    });
 
   return refreshPromise;
 }

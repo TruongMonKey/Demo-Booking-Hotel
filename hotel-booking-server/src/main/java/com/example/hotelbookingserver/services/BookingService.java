@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.hotelbookingserver.dtos.BookingDTO;
-import com.example.hotelbookingserver.dtos.request.CreateBookingRequest;
-import com.example.hotelbookingserver.dtos.request.UpdateBookingRequest;
-import com.example.hotelbookingserver.dtos.response.Response;
+import com.example.hotelbookingserver.dtos.requests.BookingCreateRequest;
+import com.example.hotelbookingserver.dtos.requests.CreateBookingRequest;
+import com.example.hotelbookingserver.dtos.requests.UpdateBookingRequest;
+import com.example.hotelbookingserver.dtos.responses.Response;
 import com.example.hotelbookingserver.entities.Booking;
 import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.RoomType;
@@ -15,7 +15,6 @@ import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.entities.constants.EBookingStatus;
 import com.example.hotelbookingserver.exception.ResourceNotFoundException;
 import com.example.hotelbookingserver.repositories.BookingRepository;
-import com.example.hotelbookingserver.repositories.HotelRepository;
 import com.example.hotelbookingserver.repositories.RoomTypeRepository;
 import com.example.hotelbookingserver.repositories.UserRepository;
 import com.example.hotelbookingserver.services.impl.IBookingService;
@@ -39,9 +38,6 @@ public class BookingService implements IBookingService {
     private RoomTypeRepository roomTypeRepository;
 
     @Autowired
-    private HotelRepository hotelRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     private long nightsBetween(LocalDate checkIn, LocalDate checkOut) {
@@ -50,8 +46,8 @@ public class BookingService implements IBookingService {
 
     @Override
     @Transactional
-    public Response<BookingDTO> createBooking(CreateBookingRequest request) {
-        Response<BookingDTO> resp = new Response<>();
+    public Response<BookingCreateRequest> createBooking(CreateBookingRequest request) {
+        Response<BookingCreateRequest> resp = new Response<>();
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + request.getUserId()));
         RoomType roomType = roomTypeRepository.findById(request.getRoomTypeId())
@@ -116,8 +112,8 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Response<BookingDTO> getBookingById(UUID bookingId) {
-        Response<BookingDTO> resp = new Response<>();
+    public Response<BookingCreateRequest> getBookingById(UUID bookingId) {
+        Response<BookingCreateRequest> resp = new Response<>();
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
         resp.setStatusCode(200);
@@ -127,8 +123,8 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Response<List<BookingDTO>> getAllBookings() {
-        Response<List<BookingDTO>> resp = new Response<>();
+    public Response<List<BookingCreateRequest>> getAllBookings() {
+        Response<List<BookingCreateRequest>> resp = new Response<>();
         List<Booking> all = bookingRepository.findAll();
         resp.setStatusCode(200);
         resp.setMessage("Get all bookings successfully");
@@ -137,9 +133,9 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Response<List<BookingDTO>> getBookingsByUser(UUID userId,
+    public Response<List<BookingCreateRequest>> getBookingsByUser(UUID userId,
             org.springframework.data.domain.Pageable pageable) {
-        Response<List<BookingDTO>> resp = new Response<>();
+        Response<List<BookingCreateRequest>> resp = new Response<>();
         var page = bookingRepository.findByUserId(userId, pageable);
         resp.setStatusCode(200);
         resp.setMessage("Get bookings by user successfully");
@@ -148,9 +144,9 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Response<List<BookingDTO>> getBookingsByHotel(UUID hotelId,
+    public Response<List<BookingCreateRequest>> getBookingsByHotel(UUID hotelId,
             org.springframework.data.domain.Pageable pageable) {
-        Response<List<BookingDTO>> resp = new Response<>();
+        Response<List<BookingCreateRequest>> resp = new Response<>();
         var page = bookingRepository.findByHotelId(hotelId, pageable);
         resp.setStatusCode(200);
         resp.setMessage("Get bookings by hotel successfully");
@@ -160,8 +156,8 @@ public class BookingService implements IBookingService {
 
     @Override
     @Transactional
-    public Response<BookingDTO> cancelBooking(UUID bookingId, String reason) {
-        Response<BookingDTO> resp = new Response<>();
+    public Response<BookingCreateRequest> cancelBooking(UUID bookingId, String reason) {
+        Response<BookingCreateRequest> resp = new Response<>();
 
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
@@ -198,8 +194,8 @@ public class BookingService implements IBookingService {
 
     @Override
     @Transactional
-    public Response<BookingDTO> updateBooking(UUID bookingId, UpdateBookingRequest request) {
-        Response<BookingDTO> resp = new Response<>();
+    public Response<BookingCreateRequest> updateBooking(UUID bookingId, UpdateBookingRequest request) {
+        Response<BookingCreateRequest> resp = new Response<>();
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
 
@@ -255,8 +251,8 @@ public class BookingService implements IBookingService {
 
     @Override
     @Transactional
-    public Response<BookingDTO> confirmPayment(UUID bookingId, String paymentMethod, String paymentStatus) {
-        Response<BookingDTO> resp = new Response<>();
+    public Response<BookingCreateRequest> confirmPayment(UUID bookingId, String paymentMethod, String paymentStatus) {
+        Response<BookingCreateRequest> resp = new Response<>();
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
         b.setPaymentMethod(paymentMethod);

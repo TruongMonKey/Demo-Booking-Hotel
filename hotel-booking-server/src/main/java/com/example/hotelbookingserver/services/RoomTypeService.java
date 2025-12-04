@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.dtos.response.Response;
-import com.example.hotelbookingserver.dtos.RoomTypeDTO;
+import com.example.hotelbookingserver.dtos.responses.Response;
+import com.example.hotelbookingserver.dtos.responses.RoomTypeResponseDTO;
 import com.example.hotelbookingserver.entities.Amenity;
 import com.example.hotelbookingserver.entities.Hotel;
 import com.example.hotelbookingserver.entities.Image;
@@ -41,8 +41,8 @@ public class RoomTypeService implements IRoomTypeService {
     private ImageRepository imageRepository;
 
     @Override
-    public Response<RoomTypeDTO> addNewRoom(RoomTypeDTO dto) {
-        Response<RoomTypeDTO> res = new Response<>();
+    public Response<RoomTypeResponseDTO> addNewRoom(RoomTypeResponseDTO dto) {
+        Response<RoomTypeResponseDTO> res = new Response<>();
         try {
 
             Hotel hotel = hotelRepository.findById(dto.getHotelId())
@@ -79,7 +79,7 @@ public class RoomTypeService implements IRoomTypeService {
                 }
             }
 
-            RoomTypeDTO result = Utils.mapRoomEntityToRoomDTO(saved);
+            RoomTypeResponseDTO result = Utils.mapRoomEntityToRoomDTO(saved);
 
             res.setStatusCode(201);
             res.setMessage("Room created successfully");
@@ -93,8 +93,8 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Response<List<RoomTypeDTO>> getAllRoomTypes() {
-        Response<List<RoomTypeDTO>> res = new Response<>();
+    public Response<List<RoomTypeResponseDTO>> getAllRoomTypes() {
+        Response<List<RoomTypeResponseDTO>> res = new Response<>();
         try {
             List<RoomType> rooms = roomTypeRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
             res.setStatusCode(200);
@@ -108,8 +108,8 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Response<RoomTypeDTO> getRoomById(UUID roomId) {
-        Response<RoomTypeDTO> res = new Response<>();
+    public Response<RoomTypeResponseDTO> getRoomById(UUID roomId) {
+        Response<RoomTypeResponseDTO> res = new Response<>();
         try {
             RoomType room = roomTypeRepository.findById(roomId)
                     .orElseThrow(() -> new OurException("Room not found"));
@@ -149,8 +149,8 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Response<List<RoomTypeDTO>> getAllAvailableRoomsByDate(LocalDate checkIn, LocalDate checkOut) {
-        Response<List<RoomTypeDTO>> res = new Response<>();
+    public Response<List<RoomTypeResponseDTO>> getAllAvailableRoomsByDate(LocalDate checkIn, LocalDate checkOut) {
+        Response<List<RoomTypeResponseDTO>> res = new Response<>();
         try {
             List<RoomType> rooms = roomTypeRepository.getAllAvailableRoomsByDate(checkIn, checkOut);
             res.setStatusCode(200);
@@ -164,8 +164,8 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Response<RoomTypeDTO> updateRoom(RoomTypeDTO dto, UUID roomId) {
-        Response<RoomTypeDTO> res = new Response<>();
+    public Response<RoomTypeResponseDTO> updateRoom(RoomTypeResponseDTO dto, UUID roomId) {
+        Response<RoomTypeResponseDTO> res = new Response<>();
         try {
 
             RoomType room = roomTypeRepository.findById(roomId)
@@ -221,9 +221,10 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Response<List<RoomTypeDTO>> getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate,
+    public Response<List<RoomTypeResponseDTO>> getAvailableRoomsByDataAndType(LocalDate checkInDate,
+            LocalDate checkOutDate,
             String roomType) {
-        Response<List<RoomTypeDTO>> res = new Response<>();
+        Response<List<RoomTypeResponseDTO>> res = new Response<>();
         try {
             List<RoomType> rooms = roomTypeRepository.findAvailableRoomsByDatesAndTypes(checkInDate, checkOutDate,
                     roomType);

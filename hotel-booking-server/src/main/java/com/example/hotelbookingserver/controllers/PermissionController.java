@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hotelbookingserver.dtos.ResultPaginationDTO;
+import com.example.hotelbookingserver.dtos.PaginationResultDTO;
 import com.example.hotelbookingserver.entities.Permission;
 import com.example.hotelbookingserver.exception.IdInvalidException;
 import com.example.hotelbookingserver.services.PermissionService;
@@ -70,7 +70,7 @@ public class PermissionController {
 
     @GetMapping("/permissions")
     @ApiMessage("Fetch a permission")
-    public ResponseEntity<ResultPaginationDTO> getPermissions(@Filter Specification<Permission> spec,
+    public ResponseEntity<PaginationResultDTO> getPermissions(@Filter Specification<Permission> spec,
             Pageable pageable) {
         return ResponseEntity.ok(this.permissionService.getPermissions(spec, pageable));
     }
