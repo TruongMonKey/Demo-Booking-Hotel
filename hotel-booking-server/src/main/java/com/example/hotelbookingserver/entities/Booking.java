@@ -1,75 +1,65 @@
 package com.example.hotelbookingserver.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
+import com.example.hotelbookingserver.entities.constants.EBookingStatus;
+import com.example.hotelbookingserver.entities.mapper.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Entity
 @Table(name = "bookings")
-public class Booking {
+@Getter
+@Setter
+public class Booking extends BaseEntity {
 
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "CHAR(36)", updatable = false, nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-    private UUID id;
-
-    @NotNull(message = "check in date is required")
+    @NotNull
+    @FutureOrPresent
     private LocalDate checkInDate;
 
-    @Future(message = "check out date must be in the future")
+    @NotNull
+    @Future
     private LocalDate checkOutDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Integer numberOfRooms;
+    private Integer numberOfGuests;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private EBookingStatus status;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
+    private String paymentStatus;
+    private String paymentMethod;
+    private String cancelReason;
 }

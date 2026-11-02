@@ -1,191 +1,572 @@
-.layout-home {
-    position: relative;
+// src/pages/Discover/Discover.scss
 
-    header {
-        background-color: #fff;
-    }
-
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        background-color: #003B95;
-        padding: 20px 150px;
-        height: 175px;
-
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 1px;
-
-            a {
-                color: rgb(255, 255, 255);
-            }
-        }
-
-        .option {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: -100px;
-
-            .language {
-                margin-right: 20px;
-
-
-                img {
-                    width: 30px;
-                    height: 30px;
-                    object-fit: cover;
-                    overflow: hidden;
-                    border-radius: 50%;
-                }
-            }
-
-            .login {
-                color: #003B95;
-                font-weight: 500;
-            }
-
-            .logout {
-                color: #003B95;
-                font-weight: 500;
-            }
-        }   
-    }
-
-    .menu {
-        position: relative;
-        top: -100px;
-        padding:0 150px;
-    }
-
-    .search {
-        background-color: #ffffff00;
-        position: relative;
-        top: -45px;
-    }
-
-    &__content {
-        padding: calc(10px + 10vw);
-        padding-top: 0px;
-        padding-bottom: 50px;
-        background-color: #fff;
-
-        .filter {
-            h2 {
-                margin: 0;
-            }
-        }
-
-        .list-hotel {
-
-            .card-item {
-                background-color: #F0F6FF;
-                border: 1px solid #A3D7FC;
-                box-shadow: 0 1px 1px 0 #A3D7FC,
-                    0 1px 1px -1px #A3D7FC,
-                    0 2px 8px 2px #A3D7FC;
-
-                .ant-card-head {
-                    border-bottom: 1px solid #A3D7FC;
-                    display: none;
-                }
-
-                .image {
-                    width: 100%;
-                    height: auto;
-                    overflow: hidden;
-
-                    img {
-                        width: 100%;
-                        aspect-ratio: 4/3;
-                        object-fit: cover;
-                    }
-                }
-
-                .content {
-
-                    .title {
-                        font-size: 20px;
-                        color: #006ce4;
-                        transition: all 0.3s;
-                        margin: 0;
-                        margin-bottom: 10px;
-
-                        &:hover {
-                            color: black;
-                            transition: all 0.3s;
-                        }
-                    }
-
-                    .address {
-                        margin-bottom: 10px;
-                        font-weight: 500;
-                    }
-
-                    .description {
-                        white-space: nowrap;
-                            overflow: hidden;  
-                            text-overflow: ellipsis;
-                    }
-
-                    .cancel {
-                        color: green;
-                        font-weight: 600;
-                    }
-
-                    .deposit {
-                        color: green;
-                        font-weight: 600;
-                        margin-bottom: 10px;
-                    }
-
-                }
-
-                .card-price {
-                    position: relative;
-
-                    .card-price__item {
-                        position: absolute;
-                        right: 0;
-                        bottom: 0;
-                        text-align: right;
-
-                        .desc {
-                            font-size: 13px;
-                            color: #ababab;
-                        }
-
-                        .price {
-                            font-size: 20px;
-                            font-weight: 500;
-                            font-style: italic;
-                            color: red;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    &__footer {
-        text-align: center;
-        background-color: #003B95;
-        color: #fff;
-        font-size: 18px;
-    }
+.ota-discover-page {
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-@media screen and (max-width: 992px) {
-    .layout-home {
-        &__header {
-            padding: 30px 50px;
-        }
+.ota-discover-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* Top Search Strip */
+.ota-discover-search-strip {
+  background: #003b95;
+  padding: 16px 0 24px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  .ota-search-bar {
+    border: 3px solid #febb02;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Main */
+.ota-discover-main {
+  flex-grow: 1;
+  padding: 24px 0 60px 0;
+}
+
+.ota-discover-breadcrumb {
+  margin-bottom: 20px;
+
+  .ant-breadcrumb {
+    font-size: 13px;
+  }
+}
+
+.ota-discover-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+}
+
+/* Filter Sidebar */
+.ota-filter-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+}
+
+.ota-filter-reset-btn {
+  background: none;
+  border: none;
+  color: #006ce4;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 4px;
+
+  &:hover {
+    background: #f0f6ff;
+  }
+}
+
+.ota-filter-group {
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+  }
+}
+
+.ota-filter-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.ota-filter-option {
+  display: flex;
+  align-items: center;
+
+  .star-display {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13.5px;
+    color: #334155;
+  }
+}
+
+.ota-price-range-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  color: #006ce4;
+  margin-bottom: 6px;
+}
+
+.ota-quick-budget-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+
+  .budget-pill {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 3px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+  }
+}
+
+.ota-filter-map-box {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 120px;
+  margin-top: 10px;
+
+  .map-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Results Section */
+.ota-results-section {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.ota-results-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+.ota-results-count {
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+
+    strong {
+      color: #006ce4;
+    }
+  }
+}
+
+.ota-sort-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .sort-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+  }
+}
+
+/* Horizontal Hotel List Card */
+.ota-hotel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ota-list-card {
+  display: flex;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #94a3b8;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+
+    .ota-list-card__image {
+      transform: scale(1.04);
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  &__image-box {
+    position: relative;
+    width: 250px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #e2e8f0;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 200px;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+    display: block;
+  }
+
+  &__fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    color: #475569;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+
+    &:hover {
+      background: #ffffff;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #008009;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  &__main {
+    padding: 16px 20px;
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #f1f5f9;
+
+    @media (max-width: 768px) {
+      border-right: none;
+      border-bottom: 1px solid #f1f5f9;
+    }
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #006ce4;
+    text-decoration: none;
+    line-height: 1.3;
+
+    &:hover {
+      color: #003580;
+      text-decoration: underline;
+    }
+  }
+
+  &__stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  &__address {
+    font-size: 12.5px;
+    color: #475569;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+
+    .icon {
+      color: #006ce4;
     }
 
-    .layout-home__content {
-        padding: 30px 50px;
+    .map-link {
+      color: #006ce4;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__room-info {
+    .room-name {
+      font-size: 13.5px;
+      color: #0f172a;
+      margin-bottom: 3px;
     }
 
+    .bed-info {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+  }
+
+  &__perks {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .perk {
+      font-size: 12px;
+      color: #008009;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &--green {
+        color: #047857;
+      }
+    }
+  }
+
+  /* Right Side Price Column */
+  &__side {
+    width: 220px;
+    padding: 16px 20px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    background: #fafcff;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      align-items: stretch;
+    }
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .score-text {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+
+      .label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .reviews {
+        font-size: 11px;
+        color: #64748b;
+      }
+    }
+
+    .score-badge {
+      background: #003580;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14.5px;
+      padding: 5px 8px;
+      border-radius: 6px 6px 6px 0;
+    }
+  }
+
+  &__price-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: auto;
+    margin-bottom: 12px;
+
+    @media (max-width: 768px) {
+      align-items: flex-start;
+    }
+
+    .nights-desc {
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .original-price {
+      font-size: 12px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+
+    .final-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+
+      .curr {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .num {
+        font-size: 21px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+    }
+
+    .tax-desc {
+      font-size: 11px;
+      color: #64748b;
+    }
+  }
+
+  &__btn-wrap {
+    width: 100%;
+    text-decoration: none;
+  }
+
+  &__cta-btn {
+    width: 100%;
+    height: 40px !important;
+    background-color: #006ce4 !important;
+    border-color: #006ce4 !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    &:hover {
+      background-color: #0057b8 !important;
+    }
+  }
+}
+
+.ota-results-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.ota-no-results {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+
+  h3 {
+    font-size: 17px;
+    color: #1e293b;
+    margin-bottom: 6px;
+  }
+
+  p {
+    color: #64748b;
+    margin-bottom: 16px;
+  }
 }

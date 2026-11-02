@@ -1,0 +1,226 @@
+// src/components/Navbar/Navbar.scss
+.ota-navbar {
+  background-color: #003b95;
+  color: #ffffff;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  &__top-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: baseline;
+    text-decoration: none;
+    cursor: pointer;
+
+    &-main {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: normal;
+      color: #ffffff;
+    }
+
+    &-suffix {
+      font-size: 24px;
+      font-weight: 800;
+      color: #febb02;
+    }
+
+    &:hover {
+      opacity: 0.95;
+    }
+  }
+
+  &__utilities {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__util-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+
+  &__flag-btn {
+    padding: 4px;
+    border-radius: 50%;
+  }
+
+  &__flag-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__list-property-btn {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 7px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #ffffff;
+      color: #ffffff;
+    }
+  }
+
+  &__user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  &__user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__btn-register {
+    background: transparent !important;
+    border: 1px solid #ffffff !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    height: 36px !important;
+    border-radius: 4px !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15) !important;
+    }
+  }
+
+  &__btn-login {
+    background: #ffffff !important;
+    border: 1px solid #ffffff !important;
+    color: #003b95 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    height: 36px !important;
+    border-radius: 4px !important;
+
+    &:hover {
+      background: #f0f4fc !important;
+      color: #00224f !important;
+    }
+  }
+
+  /* Services strip */
+  &__services-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 8px 20px;
+  }
+
+  &__services-scroll {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__service-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 24px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &.active {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+    }
+
+    &:not(.active):not(.disabled):hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__service-icon {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    &__hide-mobile {
+      display: none !important;
+    }
+
+    &__top-container {
+      padding: 10px 14px;
+    }
+
+    &__services-container {
+      padding: 0 14px 6px 14px;
+    }
+  }
+}
+

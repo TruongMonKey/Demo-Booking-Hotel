@@ -1,34 +1,20 @@
 package com.example.hotelbookingserver.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import com.example.hotelbookingserver.entities.mapper.BaseEntity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.SqlTypes;
 
 @Entity
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "room_types")
-public class RoomType {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "CHAR(36)", updatable = false, nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-    private UUID id;
+@Getter
+@Setter
+public class RoomType extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
@@ -48,18 +34,17 @@ public class RoomType {
     @Column(name = "quantity_room")
     private int quantityRoom;
 
-    @OneToMany(mappedBy = "roomType", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @BatchSize(size = 10)
+    @OneToMany(mappedBy = "roomType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Amenity> amenities = new ArrayList<>();
 
     @OneToMany(mappedBy = "roomType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "roomType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
 }

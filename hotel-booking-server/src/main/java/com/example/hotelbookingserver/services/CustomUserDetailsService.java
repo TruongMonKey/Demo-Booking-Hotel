@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.hotelbookingserver.exception.OurException;
+import com.example.hotelbookingserver.entities.User;
 import com.example.hotelbookingserver.repositories.UserRepository;
 
 @Service
@@ -17,6 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(() -> new OurException("Username/Email not Found"));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username/email: " + username));
+
+        return user;
     }
 }
