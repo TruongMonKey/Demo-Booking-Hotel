@@ -1,8 +1,7 @@
 import React from 'react';
 import LayoutDefault from '../layoutDefault/layoutDefault';
-// import BookRoom from "../pages/BookRoom";
 import CreateRoom from '../pages/CreateRoom';
-import Dashboard from "../pages/Dashboard"; // Đã sửa lỗi chính tả
+import Dashboard from "../pages/Dashboard";
 import Detail from '../pages/Detail';
 import Discover from '../pages/Discover';
 import Home from '../pages/Home';
@@ -40,6 +39,10 @@ export const router = [
         ]
     },
     {
+        path: "detail/:id",
+        element: <Detail />
+    },
+    {
         path: "auth",
         element: <LoginPage />
     },
@@ -49,8 +52,7 @@ export const router = [
             {
                 path: "/profile",
                 element: <Profile/>,
-            }
-            ,
+            },
             {
                 path: "/admin",
                 element: <LayoutDefault />,
@@ -89,6 +91,12 @@ export const router = [
     },
     {
         path: "/*",
-        element: <><h1>Trang không tồn tại</h1></>,
+        element: (
+          <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+            <h2>404 - Trang không tồn tại</h2>
+            <p>Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.</p>
+            <a href="/" style={{ color: '#006ce4', fontWeight: 'bold' }}>Quay lại Trang chủ</a>
+          </div>
+        ),
     }
 ];

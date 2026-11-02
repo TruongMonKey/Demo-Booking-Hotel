@@ -1,265 +1,366 @@
-import { Button, Col, Layout, Row, Pagination } from "antd";
-import { Link, Outlet, useLocation, useParams } from "react-router";
-import "./Discover.scss";
-import { Content, Footer } from "antd/es/layout/layout";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { getHotels } from "../../Service/HotelService";
-import ListHotel from "./ListHotel";
-import HotelSearch from "../../components/Search";
-import TopMenu from "../../components/TopMenu";
-import RatingFilter from "../../components/RatingFilter";
+// src/pages/Discover/index.jsx
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useLocation, useParams, useNavigate, Outlet, Link } from 'react-router-dom';
+import {
+  Breadcrumb,
+  Checkbox,
+  Slider,
+  Select,
+  Pagination,
+  Button,
+  Empty
+} from 'antd';
+import {
+  FilterOutlined,
+  ReloadOutlined,
+  HomeOutlined,
+  StarFilled
+} from '@ant-design/icons';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import HotelSearch from '../../components/Search';
+import ListHotel from './ListHotel';
+import { getHotels } from '../../Service/HotelService';
+import './Discover.scss';
 
-
-function capitalizeWords(str) {
-  return str
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-
-
-function Discover() {
+export default function Discover() {
   const [hotels, setHotels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [keyword, setKeyword] = useState('');
   const [selectedRatings, setSelectedRatings] = useState([]);
-  const [keywordFromURL, setKeywordFromURL] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 10000000]);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [freeCancelOnly, setFreeCancelOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // Số hotel hiển thị mỗi trang
+  const [pageSize, setPageSize] = useState(6);
 
   const location = useLocation();
-  const param = useParams()
+  const param = useParams();
+  const navigate = useNavigate();
 
-  const token = localStorage.getItem("accessToken");
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("email");
-    localStorage.removeItem("phone");
-    localStorage.removeItem("roles");
-    localStorage.removeItem("userId")
+  // If viewing hotel detail inside /discover/detail/:id
+  if (param.id) {
+    return <Outlet />;
   }
 
+  // Parse query params on load or URL change
   useEffect(() => {
-    const fetchAPI = async () => {
+    const params = new URLSearchParams(location.search);
+    const kw = params.get('keyword') || '';
+    setKeyword(kw);
+    setCurrentPage(1);
+  }, [location.search]);
+
+  // Fetch hotels
+  useEffect(() => {
+    const fetchHotels = async () => {
+      setLoading(true);
       try {
         const response = await getHotels();
-        // Normalize: handle both array and { data: array } response
-        const hotelList = Array.isArray(response) ? response : (response?.data || []);
-        setHotels(hotelList);
-        
-      } catch (error) {
-        console.error("Lỗi khi tải danh sách khách sạn:", error);
+        const list = Array.isArray(response) ? response : (response?.data || []);
+        setHotels(list);
+      } catch (err) {
+        console.error('Lỗi khi tải danh sách khách sạn:', err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchAPI();
-  }, [param]);
+    fetchHotels();
+  }, []);
 
-  // Lọc khách sạn theo từ khóa & số sao
+  // Filter & Sort Logic
   const filteredHotels = useMemo(() => {
-    let result = hotels;
-    const searchKey = keywordFromURL.trim().toLowerCase();
+    let result = [...hotels];
 
-    if (searchKey) {
+    // 1. Search Keyword
+    if (keyword.trim()) {
+      const q = keyword.trim().toLowerCase();
       result = result.filter(
-        (hotel) =>
-          hotel?.name?.toLowerCase().includes(searchKey) ||
-          hotel?.address?.toLowerCase().includes(searchKey)
+        (h) =>
+          h.name?.toLowerCase().includes(q) ||
+          h.address?.toLowerCase().includes(q) ||
+          h.city?.toLowerCase().includes(q) ||
+          h.description?.toLowerCase().includes(q)
       );
     }
 
+    // 2. Star Ratings Filter
     if (selectedRatings.length > 0) {
-      result = result.filter((hotel) => selectedRatings.includes(Math.floor(hotel.rate)));
+      result = result.filter((h) => selectedRatings.includes(Math.floor(h.rate || 0)));
+    }
+
+    // 3. Price Filter
+    result = result.filter((h) => {
+      const price = h.roomTypes?.[0]?.price || 0;
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
+    // 4. Free Cancel Filter
+    if (freeCancelOnly) {
+      result = result.filter((h) => h.cancel === true);
+    }
+
+    // 5. Sorting
+    if (sortBy === 'price-asc') {
+      result.sort((a, b) => (a.roomTypes?.[0]?.price || 0) - (b.roomTypes?.[0]?.price || 0));
+    } else if (sortBy === 'price-desc') {
+      result.sort((a, b) => (b.roomTypes?.[0]?.price || 0) - (a.roomTypes?.[0]?.price || 0));
+    } else if (sortBy === 'rating-desc') {
+      result.sort((a, b) => (b.rate || 0) - (a.rate || 0));
     }
 
     return result;
-  }, [hotels, keywordFromURL, selectedRatings]);
+  }, [hotels, keyword, selectedRatings, priceRange, freeCancelOnly, sortBy]);
 
-  // Tính toán dữ liệu hiển thị cho trang hiện tại
+  // Pagination slice
   const currentPageData = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredHotels.slice(startIndex, endIndex);
+    const start = (currentPage - 1) * pageSize;
+    return filteredHotels.slice(start, start + pageSize);
   }, [filteredHotels, currentPage, pageSize]);
 
-  // Xử lý tìm kiếm và cập nhật keywordFromURL
-  const handleSearch = useCallback(({ keyword }) => {
-    setKeywordFromURL(keyword); // Cập nhật keyword ngay lập tức
-    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm mới
-    const newParams = new URLSearchParams(location.search);
-    if (keyword) {
-      newParams.set("keyword", keyword);
-    } else {
-      newParams.delete("keyword");
-    }
-    window.history.replaceState(null, "", `?${newParams.toString()}`);
-  }, [location.search]);
-
-  // Cập nhật bộ lọc số sao
-  const handleFilter = useCallback((ratings) => {
-    setSelectedRatings(ratings);
-    setCurrentPage(1); // Reset về trang đầu khi thay đổi filter
-  }, []);
-
-  // Xử lý thay đổi trang
-  const handlePageChange = useCallback((page, size) => {
-    setCurrentPage(page);
-    setPageSize(size);
-
-    // Scroll to top khi chuyển trang
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }, []);
-
-  useEffect(() => {
+  // Handle Search Submission
+  const handleSearchSubmit = ({ keyword: newKeyword }) => {
     const params = new URLSearchParams(location.search);
-    const keyword = params.get("keyword") || "";
-    setKeywordFromURL(keyword);
-  }, [location.search]);
-
-  // Reset trang khi filteredHotels thay đổi
-  useEffect(() => {
-    if (currentPage > Math.ceil(filteredHotels.length / pageSize)) {
-      setCurrentPage(1);
+    if (newKeyword) {
+      params.set('keyword', newKeyword);
+    } else {
+      params.delete('keyword');
     }
-  }, [filteredHotels.length, pageSize, currentPage]);
+    navigate(`/discover?${params.toString()}`);
+  };
+
+  const handleResetFilters = () => {
+    setSelectedRatings([]);
+    setPriceRange([0, 10000000]);
+    setSelectedAmenities([]);
+    setFreeCancelOnly(false);
+    setSortBy('popular');
+    setCurrentPage(1);
+  };
 
   return (
-    <Layout className="layout-home">
-      <header>
-        <div className="layout-home__header">
-          <div className="logo">
-            <Link to="/">HotelBooking.com</Link>
-          </div>
-          <div className="option">
-            <div className="language">
-              <img
-                src="https://t-cf.bstatic.com/design-assets/assets/v3.142.0/images-flags/Vn@3x.png"
-                alt="Tiếng Việt"
-              />
-            </div>
-            <Row className="login/logout" gutter={20}>
-              <Col span={24}>
-                {token ? (
-                  <>
-                    <Button className="login" onClick={handleLogout}>
-                      <Link>Đăng xuất</Link>
-                    </Button>
-                    {token ? (
-                      <Link to="/profile" style={{marginLeft: "10px", color: "#fff", fontWeight: "500", }}>{capitalizeWords(localStorage.getItem("fullName"))}</Link>
-                    )
-                      :
-                      (
-                        <></>
-                      )
-                    }
-                  </>
-                ) : (
-                  <>
-                    <Button className="login">
-                      <Link to={"/auth"}>Đăng nhập</Link>
-                    </Button>
-                  </>
-                )}
-              </Col>
-            </Row>
-          </div>
-        </div>
-        <div className="menu">
-          <TopMenu />
-        </div>
-        <div className="search">
-          <HotelSearch onSearch={handleSearch} defaultKeyword={keywordFromURL} />
-        </div>
-      </header>
+    <div className="ota-discover-page">
+      <Navbar activeTab="stays" />
 
-      <Content className="layout-home__content">
-        {param.id ? (
-          <><Outlet /></>
-        ) : (
-          <>
-            <Row gutter={20}>
-              <Col span={5} className="filter">
-                <h2>Chọn lọc theo:</h2>
-                <RatingFilter onFilter={handleFilter} />
-              </Col>
-              <Col span={19}>
-                <div>
-                  {/* Hiển thị thông tin tổng quan */}
-                  <div style={{
-                    marginBottom: '16px',
-                    fontSize: '14px',
-                    color: '#666',
-                    textAlign: 'right'
-                  }}>
-                    Tìm thấy {filteredHotels.length} khách sạn
-                    {keywordFromURL && (
-                      <span> cho từ khóa "<strong>{keywordFromURL}</strong>"</span>
-                    )}
-                  </div>
+      {/* Top Search Banner */}
+      <section className="ota-discover-search-strip">
+        <div className="ota-discover-container">
+          <HotelSearch
+            onSearch={handleSearchSubmit}
+            defaultKeyword={keyword}
+            className="ota-discover-search-bar"
+          />
+        </div>
+      </section>
 
-                  {/* Danh sách khách sạn */}
+      {/* Main Results Container */}
+      <main className="ota-discover-main">
+        <div className="ota-discover-container">
+          {/* Breadcrumb */}
+          <div className="ota-discover-breadcrumb">
+            <Breadcrumb
+              items={[
+                {
+                  title: (
+                    <Link to="/">
+                      <HomeOutlined /> Trang chủ
+                    </Link>
+                  ),
+                },
+                {
+                  title: 'Khám phá chỗ nghỉ',
+                },
+                ...(keyword ? [{ title: keyword }] : []),
+              ]}
+            />
+          </div>
+
+          <div className="ota-discover-layout">
+            {/* Left Filter Sidebar */}
+            <aside className="ota-filter-sidebar">
+              <div className="ota-filter-sidebar__header">
+                <h3>
+                  <FilterOutlined /> Chọn lọc theo:
+                </h3>
+                <button className="ota-filter-reset-btn" onClick={handleResetFilters}>
+                  <ReloadOutlined /> Đặt lại
+                </button>
+              </div>
+
+              {/* Filter: Star Rating */}
+              <div className="ota-filter-group">
+                <h4 className="ota-filter-group__title">Xếp hạng sao</h4>
+                <Checkbox.Group
+                  value={selectedRatings}
+                  onChange={(vals) => {
+                    setSelectedRatings(vals);
+                    setCurrentPage(1);
+                  }}
+                  className="ota-filter-checkboxes"
+                >
+                  {[5, 4, 3, 2].map((star) => (
+                    <div key={star} className="ota-filter-option">
+                      <Checkbox value={star}>
+                        <span className="star-display">
+                          {star} sao
+                          <span className="stars-icons">
+                            {Array.from({ length: star }).map((_, i) => (
+                              <StarFilled key={i} style={{ color: '#f59e0b', fontSize: '11px', marginLeft: '2px' }} />
+                            ))}
+                          </span>
+                        </span>
+                      </Checkbox>
+                    </div>
+                  ))}
+                </Checkbox.Group>
+              </div>
+
+              {/* Filter: Price Range */}
+              <div className="ota-filter-group">
+                <h4 className="ota-filter-group__title">Ngân sách (mỗi đêm)</h4>
+                <div className="ota-price-range-text">
+                  <span>{priceRange[0].toLocaleString('vi-VN')}₫</span>
+                  <span>—</span>
+                  <span>{priceRange[1] >= 10000000 ? '10.000.000₫+' : `${priceRange[1].toLocaleString('vi-VN')}₫`}</span>
+                </div>
+                <Slider
+                  range
+                  min={0}
+                  max={10000000}
+                  step={200000}
+                  value={priceRange}
+                  onChange={(val) => {
+                    setPriceRange(val);
+                    setCurrentPage(1);
+                  }}
+                />
+                <div className="ota-quick-budget-pills">
+                  <button
+                    className="budget-pill"
+                    onClick={() => { setPriceRange([0, 1500000]); setCurrentPage(1); }}
+                  >
+                    Dưới 1.5M
+                  </button>
+                  <button
+                    className="budget-pill"
+                    onClick={() => { setPriceRange([1500000, 3500000]); setCurrentPage(1); }}
+                  >
+                    1.5M - 3.5M
+                  </button>
+                  <button
+                    className="budget-pill"
+                    onClick={() => { setPriceRange([3500000, 10000000]); setCurrentPage(1); }}
+                  >
+                    Trên 3.5M
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter: Cancellation Policy */}
+              <div className="ota-filter-group">
+                <h4 className="ota-filter-group__title">Chính sách đặt phòng</h4>
+                <div className="ota-filter-option">
+                  <Checkbox
+                    checked={freeCancelOnly}
+                    onChange={(e) => {
+                      setFreeCancelOnly(e.target.checked);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Miễn phí hủy phòng
+                  </Checkbox>
+                </div>
+              </div>
+
+              {/* Map Promotion Teaser */}
+              <div className="ota-filter-map-box">
+                <img
+                  src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=400&q=80"
+                  alt="Bản đồ khách sạn"
+                  className="map-thumbnail"
+                />
+                <div className="map-overlay">
+                  <Button type="primary" size="small" onClick={() => window.open('https://maps.google.com', '_blank')}>
+                    Xem trên bản đồ
+                  </Button>
+                </div>
+              </div>
+            </aside>
+
+            {/* Right Results Column */}
+            <section className="ota-results-section">
+              {/* Results Topbar */}
+              <div className="ota-results-topbar">
+                <div className="ota-results-count">
+                  <h2>
+                    {keyword ? `${keyword}: ` : ''}
+                    tìm thấy <strong>{filteredHotels.length}</strong> chỗ nghỉ
+                  </h2>
+                </div>
+
+                <div className="ota-sort-box">
+                  <span className="sort-label">Sắp xếp theo:</span>
+                  <Select
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val)}
+                    style={{ width: 190 }}
+                    options={[
+                      { value: 'popular', label: 'Gợi ý hàng đầu' },
+                      { value: 'price-asc', label: 'Giá: Thấp đến cao' },
+                      { value: 'price-desc', label: 'Giá: Cao đến thấp' },
+                      { value: 'rating-desc', label: 'Điểm đánh giá cao nhất' },
+                    ]}
+                  />
+                </div>
+              </div>
+
+              {/* Hotel List */}
+              {currentPageData.length > 0 ? (
+                <>
                   <ListHotel data={currentPageData} />
 
                   {/* Pagination */}
-                  {filteredHotels.length > 0 && (
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginTop: '32px',
-                      marginBottom: '20px'
-                    }}>
+                  {filteredHotels.length > pageSize && (
+                    <div className="ota-results-pagination">
                       <Pagination
                         current={currentPage}
                         total={filteredHotels.length}
                         pageSize={pageSize}
-                        onChange={handlePageChange}
-                        showSizeChanger={true}
-                        showQuickJumper={true}
+                        onChange={(page) => {
+                          setCurrentPage(page);
+                          window.scrollTo({ top: 120, behavior: 'smooth' });
+                        }}
+                        showSizeChanger={false}
                         showTotal={(total, range) =>
                           `${range[0]}-${range[1]} của ${total} khách sạn`
                         }
-                        pageSizeOptions={['5', '10', '15', '20']}
-                        locale={{
-                          items_per_page: '/ trang',
-                          jump_to: 'Đến trang',
-                          jump_to_confirm: 'xác nhận',
-                          page: '',
-                          prev_page: 'Trang trước',
-                          next_page: 'Trang sau',
-                          prev_5: '5 trang trước',
-                          next_5: '5 trang sau',
-                          prev_3: '3 trang trước',
-                          next_3: '3 trang sau'
-                        }}
                       />
                     </div>
                   )}
-
-                  {/* Thông báo không tìm thấy kết quả */}
-                  {filteredHotels.length === 0 && hotels.length > 0 && (
-                    <div style={{
-                      textAlign: 'center',
-                      padding: '40px',
-                      color: '#999'
-                    }}>
-                      <h3>Không tìm thấy khách sạn phù hợp</h3>
-                      <p>Hãy thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
-                    </div>
-                  )}
+                </>
+              ) : (
+                <div className="ota-no-results">
+                  <Empty
+                    description={
+                      <div>
+                        <h3>Không tìm thấy chỗ nghỉ nào phù hợp</h3>
+                        <p>Hãy thử xóa một số bộ lọc hoặc thay đổi từ khóa tìm kiếm</p>
+                      </div>
+                    }
+                  >
+                    <Button type="primary" onClick={handleResetFilters}>
+                      Đặt lại bộ lọc
+                    </Button>
+                  </Empty>
                 </div>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Content>
+              )}
+            </section>
+          </div>
+        </div>
+      </main>
 
-      <Footer className="layout-home__footer">2025 copyright @Nhom5</Footer>
-    </Layout>
+      <Footer />
+    </div>
   );
 }
-
-export default Discover;

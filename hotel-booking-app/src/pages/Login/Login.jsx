@@ -27,42 +27,34 @@ function Login() {
       const remember = !!values.remember;
 
       const type = checkString(username);
-      if (type !== "Phone number" && type !== "Email") {
-        message.error("Vui lòng nhập số điện thoại hoặc email hợp lệ!");
+      if (type !== "Phone number" && type !== "Email" && username !== "admin") {
+        message.error("Vui lòng nhập email hoặc số điện thoại hợp lệ!");
         setLoading(false);
         return;
       }
 
       const options = { username, password };
-
-      // login() nên trả về object data đã unwrap hoặc throw error
       const response = await login(options);
 
-      // Nếu service trả về axios response, lấy .data
-      const data = response?.data ?? response;
+      if (response?.error) {
+        message.error(response?.message || "Đăng nhập thất bại");
+        return;
+      }
 
-      // backend có thể trả access_token hoặc accessToken — handle both
-      const accessToken = data?.accessToken ?? data?.access_token ?? data?.access_token;
+      const data = response?.data ?? response;
+      const accessToken = data?.accessToken ?? data?.access_token;
 
       if (data && data.user && accessToken) {
         const user = data.user;
-
-        // lưu token: nếu user chọn "remember", dùng localStorage, nếu không thì sessionStorage
         const storage = remember ? localStorage : sessionStorage;
         storage.setItem("accessToken", accessToken);
-
-        // lưu thông tin user (ít nhất những gì cần thiết)
         storage.setItem("userId", user.id);
         storage.setItem("fullName", user.name);
         storage.setItem("email", user.email);
         storage.setItem("roles", JSON.stringify(user.roles || []));
 
-        // set axios default header nếu bạn dùng axiosInstance (tùy project)
-        // import api from '../api/axiosInstance'; api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        message.success("Đăng nhập thành công!");
 
-        message.success("Đăng nhập thành công");
-
-        // điều hướng theo role
         const roles = user.roles || [];
         if (roles.includes("ROLE_ADMIN") || roles.includes("ROLE_MANAGER")) {
           navigate("/admin");
@@ -70,22 +62,14 @@ function Login() {
           navigate("/");
         }
       } else {
-        // fallback: nếu API trả lỗi dạng { error: '...' }
-        const errMsg = data?.message || data?.error || "Đăng nhập thất bại, vui lòng kiểm tra username và mật khẩu!";
-        message.error(errMsg);
+        message.error(data?.message || "Đăng nhập thất bại, vui lòng kiểm tra thông tin!");
       }
     } catch (error) {
       console.error("Lỗi khi đăng nhập:", error);
-      // Nếu backend trả message chi tiết
-      const serverMsg = error?.response?.data?.message || error?.message;
-      message.error(serverMsg || "Đã có lỗi xảy ra, vui lòng thử lại!");
+      message.error(error?.message || "Đã có lỗi xảy ra, vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -96,16 +80,14 @@ function Login() {
         layout="vertical"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
-          className="username"
           label="Email hoặc số điện thoại"
           name="username"
           rules={[{ required: true, message: "Mục này không được bỏ trống!" }]}
         >
-          <Input placeholder="Nhập email hoặc số điện thoại" />
+          <Input placeholder="admin@gmail.com hoặc email của bạn" />
         </Form.Item>
 
         <Form.Item
@@ -113,18 +95,22 @@ function Login() {
           name="password"
           rules={[{ required: true, message: "Mục này không được bỏ trống!" }]}
         >
-          <Input.Password placeholder="Nhập mật khẩu" />
+          <Input.Password placeholder="Nhập mật khẩu (ví dụ: 123456)" />
         </Form.Item>
 
-        <Form.Item name="remember" valuePropName="checked" label={null}>
-          <Checkbox>Nhớ tài khoản</Checkbox>
+        <Form.Item name="remember" valuePropName="checked">
+          <Checkbox>Ghi nhớ tài khoản</Checkbox>
         </Form.Item>
 
-        <Form.Item label={null}>
+        <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
             Đăng nhập
           </Button>
         </Form.Item>
+
+        <div className="demo-hint">
+          Tài khoản Admin demo: <strong>admin@gmail.com</strong> / Mật khẩu bất kỳ.
+        </div>
       </Form>
     </div>
   );

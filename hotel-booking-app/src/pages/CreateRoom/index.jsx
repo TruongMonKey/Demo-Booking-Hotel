@@ -212,8 +212,8 @@ function CreateRoom() {
 
   const handleThumbnailUpload = ({ file }) => {
     console.log('Thumbnail upload:', file);
-      const thumbnailFile = file.originFileObj;
-      setThumbnailFile(thumbnailFile);
+    const thumbnailFile = file.originFileObj;
+    setThumbnailFile(thumbnailFile);
   };
 
   const handleImagesUpload = ({ file, fileList }) => {
@@ -255,14 +255,14 @@ function CreateRoom() {
                     >
                       <Upload
                         name="file"
-                        action="http://localhost:8081/images/upload"
+                        action="http://localhost:8081/api/images/hotel/upload"
                         listType="picture"
                         maxCount={1}
                         onChange={handleThumbnailUpload}
                       >
                         <Button icon={<UploadOutlined />}>Tải lên hình ảnh</Button>
                       </Upload>
-                      
+
                     </Form.Item>
                   </Col>
                   <Col span={24}>

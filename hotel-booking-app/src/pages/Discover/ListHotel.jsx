@@ -1,68 +1,169 @@
-import { Badge, Button, Card, Col, Row } from "antd";
-import { CheckOutlined, RightOutlined } from '@ant-design/icons'
+// src/pages/Discover/ListHotel.jsx
+import React, { useState } from 'react';
+import { Button, Tag } from 'antd';
+import {
+  EnvironmentOutlined,
+  CheckCircleOutlined,
+  HeartOutlined,
+  HeartFilled,
+  StarFilled,
+  RightOutlined
+} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import StarRating from "../../components/StarRating";
+import './Discover.scss';
 
+export default function ListHotel({ data = [] }) {
+  const [favorites, setFavorites] = useState({});
 
-function ListHotel(props) {
-  const { data } = props;
-  
+  const toggleFavorite = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const getRatingLabel = (rate) => {
+    if (rate >= 4.8) return 'Xuất sắc';
+    if (rate >= 4.5) return 'Tuyệt vời';
+    if (rate >= 4.0) return 'Rất tốt';
+    return 'Hài lòng';
+  };
+
+  if (!data || data.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      <Row gutter={[20, 20]} className="list-hotel">
-        {data && data.map((item) => (
-          <Col span={24} key={item.id}>
-            <Badge.Ribbon text={item.rate >= 4.5 ? "Tốt" : "Trung bình"} color={item.rate >= 4.5 ? "purple" : "blue"}>
-              <Card className="card-item" key={item.id}
-                title={item.name}
-                variant="borderless"
-              >
-                <Row gutter={[20, 20]}>
-                  <Col xxl={9} xl={9} lg={9} md={9} sm={24} span={24}>
-                    <div className="image">
-                      <img src={item?.images[0]?.imageUrl || ""} alt="ảnh khách sạn"></img>
-                    </div>
-                  </Col>
-                  <Col xxl={11} xl={11} lg={11} md={11} sm={24} span={24}>
-                    <div className="content">
-                      <h2 className="title">{item.name}</h2>
-                      <div className="address">{item.address}</div>
-                      <a href={item.linkMap} className="link-map" target="_blank" rel="noreferrer">Xem bản đồ</a>
-                      <p className="description">{item.description}</p>
-                      <div className="cancel">{item.cancel ? (
-                        <>
-                          <CheckOutlined /> Miễn phí hủy
-                        </>
-                      ) : (<></>)}</div>
-                      <div className="deposit">{!item.deposit ? (
-                        <>
-                          <CheckOutlined /> Không cọc trước, không thanh toán trước
-                        </>
-                      ) : (<></>)}</div>
-                      <div className="rate"><StarRating rate={item.rate} /></div>
-                      {/* <div className="quantity-review">{(item.reviews).length} người đã đánh giá</div> */}
-                    </div>
-                  </Col>
-                  <Col className="card-price" xxl={4} xl={4} lg={4} md={4} sm={24} span={24}  >
-                    <div className="card-price__item">
-                      <p className="desc">1 đêm, 2 người lớn</p>
-                      <strong className="price">
-                        {item.roomTypes && item.roomTypes.length > 0 && item.roomTypes[0]?.price
-                          ? `${item.roomTypes[0].price.toLocaleString("vi-VN")} VND`
-                          : "Thỏa thuận"}
-                      </strong>
-                      <p className="desc">Đã bao gồm thuế và phí</p>
-                      <Button type="primary"><Link to={`detail/${item.id}`}>Xem chỗ trống<RightOutlined /></Link></Button>
-                    </div>
-                  </Col>
-                </Row>
-              </Card>
-            </Badge.Ribbon>
-          </Col>
-        ))}
-      </Row>
-    </>
-  )
-}
+    <div className="ota-hotel-list">
+      {data.map((hotel, index) => {
+        const img =
+          hotel?.images?.[0]?.imageUrl ||
+          hotel?.thumbnailUrl ||
+          'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80';
+        const roomType = hotel?.roomTypes?.[0];
+        const price = roomType?.price || 1200000;
+        const originalPrice = roomType?.originalPrice || Math.round(price * 1.25);
+        const rate = hotel?.rate || 4.7;
+        const isFav = !!favorites[hotel.id];
+        const detailLink = `/discover/detail/${hotel.id}`;
 
-export default ListHotel;
+        return (
+          <div className="ota-list-card" key={hotel.id || index}>
+            {/* Left Image Section */}
+            <div className="ota-list-card__image-box">
+              <Link to={detailLink}>
+                <img src={img} alt={hotel.name} className="ota-list-card__image" loading="lazy" />
+              </Link>
+              <button
+                className={`ota-list-card__fav-btn ${isFav ? 'active' : ''}`}
+                onClick={(e) => toggleFavorite(e, hotel.id)}
+                title="Lưu vào yêu thích"
+              >
+                {isFav ? <HeartFilled style={{ color: '#e11d48' }} /> : <HeartOutlined />}
+              </button>
+              {originalPrice > price && (
+                <div className="ota-list-card__badge">Ưu đãi hôm nay</div>
+              )}
+            </div>
+
+            {/* Middle Content Section */}
+            <div className="ota-list-card__main">
+              <div className="ota-list-card__header">
+                <div>
+                  <div className="ota-list-card__title-row">
+                    <Link to={detailLink} className="ota-list-card__title">
+                      {hotel.name}
+                    </Link>
+                    <div className="ota-list-card__stars">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <StarFilled
+                          key={i}
+                          style={{
+                            color: i < Math.floor(rate) ? '#f59e0b' : '#e2e8f0',
+                            fontSize: '13px'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="ota-list-card__address">
+                    <EnvironmentOutlined className="icon" />
+                    <span>{hotel.address}</span>
+                    {hotel.linkMap && (
+                      <a
+                        href={hotel.linkMap}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="map-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        · Xem trên bản đồ
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Room details / perks */}
+              <div className="ota-list-card__room-info">
+                <div className="room-name">
+                  <strong>{roomType?.name || 'Phòng Deluxe Tiêu Chuẩn'}</strong>
+                </div>
+                <div className="bed-info">
+                  {roomType?.quantityBed || 1} giường lớn · Diện tích: {roomType?.roomArea || 32} m²
+                </div>
+
+                <div className="ota-list-card__perks">
+                  <span className="perk">
+                    <CheckCircleOutlined /> Miễn phí hủy phòng
+                  </span>
+                  <span className="perk">
+                    <CheckCircleOutlined /> Không cần thanh toán trước — thanh toán tại chỗ nghỉ
+                  </span>
+                  <span className="perk perk--green">
+                    <CheckCircleOutlined /> Bao gồm bữa sáng thịnh soạn
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Price & Booking Column */}
+            <div className="ota-list-card__side">
+              {/* Rating score badge */}
+              <div className="ota-list-card__rating">
+                <div className="score-text">
+                  <span className="label">{getRatingLabel(rate)}</span>
+                  <span className="reviews">{hotel.reviewsCount || 128} đánh giá</span>
+                </div>
+                <div className="score-badge">{Number(rate).toFixed(1)}</div>
+              </div>
+
+              {/* Price box */}
+              <div className="ota-list-card__price-box">
+                <span className="nights-desc">1 đêm, 2 người lớn</span>
+                {originalPrice > price && (
+                  <span className="original-price">
+                    VND {Number(originalPrice).toLocaleString('vi-VN')}
+                  </span>
+                )}
+                <div className="final-price">
+                  <span className="curr">VND</span>
+                  <span className="num">{Number(price).toLocaleString('vi-VN')}</span>
+                </div>
+                <span className="tax-desc">Đã bao gồm thuế và phí</span>
+              </div>
+
+              {/* CTA Button */}
+              <Link to={detailLink} className="ota-list-card__btn-wrap">
+                <Button type="primary" className="ota-list-card__cta-btn">
+                  <span>Xem chỗ trống</span>
+                  <RightOutlined />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

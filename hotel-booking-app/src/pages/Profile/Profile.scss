@@ -1,60 +1,119 @@
-.profile-container {
-  width: 100vw;
-  height: 100vh;
-  background-color: #f0f2f5;
-  padding: 40px 80px;
-  box-sizing: border-box;
-  overflow-y: auto;
+// src/pages/Profile/Profile.scss
+
+.ota-profile-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.profile-card {
+.ota-profile-main {
+  flex-grow: 1;
+  padding: 24px 0 60px 0;
+}
+
+.ota-profile-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
   width: 100%;
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  background-color: #ffffff;
-  padding-top: 40px;
 }
 
-.profile-horizontal {
+.ota-profile-breadcrumb {
+  margin-bottom: 18px;
+}
+
+.ota-profile-card {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 10px;
+}
+
+.ota-profile-header {
   display: flex;
   align-items: center;
-  gap: 32px;
-  flex-wrap: wrap;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
-.profile-info {
-  flex: 1;
+.ota-profile-info {
+  flex-grow: 1;
 
-  h3 {
-    margin-bottom: 8px;
-  }
-
-  .ant-typography {
+  .name-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 }
 
-.profile-extra {
-  margin-top: 48px;
-  border-top: 1px solid #eaeaea;
-  padding-top: 24px;
-
-  // Tùy chỉnh thêm tại đây nếu cần
-}
-
-.profile-back-button {
-  position: absolute;
-  top: 20px;
-  left: 24px;
-  z-index: 10;
-  font-weight: 500;
-
-  span {
-    color: #111111;
+.ota-profile-tabs {
+  .ant-tabs-nav {
+    margin-bottom: 20px;
   }
 }
 
+.ota-profile-tab-content {
+  .tab-header {
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 4px 0;
+    }
+
+    p {
+      font-size: 13.5px;
+      color: #64748b;
+      margin: 0;
+    }
+  }
+
+  .ant-table-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #f1f5f9 !important;
+    font-weight: 700 !important;
+  }
+}
+
+.genius-promo-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: linear-gradient(135deg, #003580 0%, #006ce4 100%);
+  color: #ffffff;
+  padding: 24px;
+  border-radius: 10px;
+
+  .crown-icon {
+    font-size: 38px;
+    color: #febb02;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+  }
+
+  p {
+    font-size: 13.5px;
+    color: #e2e8f0;
+    margin: 0;
+  }
+}
